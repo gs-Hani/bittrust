@@ -1,6 +1,6 @@
-import   React, { useEffect, useState }      from 'react';
-import          { useDispatch, useSelector } from 'react-redux';
-import          { useNavigate }              from 'react-router-dom';
+import   React, { useEffect, useState }         from 'react';
+import          { useDispatch, useSelector }    from 'react-redux';
+import          { useNavigate,useSearchParams } from 'react-router-dom';
 
 import './Auth.css';
 import { sign_up, sign_in }             from './authSlice';
@@ -12,12 +12,13 @@ export const Auth = () => {
     const [password, setPassword] = useState();
     const [date    , setDate]     = useState();
     const [ref     , setRef]      = useState();
+    // const [searchParams, setSearchParams] = useSearchParams();
     const  navigate               = useNavigate();
     const  dispatch               = useDispatch();
     const { authenticated }       = useSelector(state => state.auth);
     const { error }               = useSelector(state => state.auth);
 
-    useEffect(() => { if(authenticated) {navigate('/');} },  [authenticated,navigate]);
+    useEffect(() => { if(authenticated) {navigate('/transRecords');} },  [authenticated,navigate]);
 
     // registration response ==========================================================================
     const register = async  (username,email,password,date) => {
@@ -32,10 +33,35 @@ export const Auth = () => {
         document.getElementById("sign-in-form").style.bottom = "0";
     };
 
+    const refCodeInput = () => {
+        // const params = new URL(document.location).searchParams;
+        const url = new URL(document.location);
+        const refCode = url.pathname.split('/')[1];
+        if (!refCode) {
+            return (
+                <input 
+                    type        ="text"
+                    id          ="refCode"
+                    name        ="refCode"
+                    placeholder ="Refferal code"
+                    onChange={(e) => setRef(e.target.value)}/>
+            )
+        } else {
+            return (
+                <input 
+                    type  ="text"
+                    id    ="refCode"
+                    name  ="refCode"
+                    value ={refCode}
+                    readOnly/> 
+            )
+        }
+    }
+
     return (
         <div className="auth">
-            <form
-                onSubmit ={(e) => { e.preventDefault(); register(username,email,password,date,ref);}}
+            <form id ="sign-up-form"
+                  onSubmit ={(e) => { e.preventDefault(); register(username,email,password,date,ref);}}
             >
                 <h2>Sign UP</h2>
                 <input  
@@ -87,11 +113,7 @@ export const Auth = () => {
                     onChange={(e) => setDate(e.target.value)}
                     required />
                 
-                <input 
-                    type    ="text"
-                    id      ="refCode"
-                    name    ="refCode"
-                    onChange={(e) => setRef(e.target.value)}/>
+                {refCodeInput()}
 
                 <input 
                     type     ="submit"
@@ -112,7 +134,8 @@ export const Auth = () => {
                     onChange    ={(e) =>  setEmail(e.target.value)}
                     size        ="25"
                     autoComplete="on"
-                    required />
+                    // required 
+                    />
 
                 <input 
                     type        ="password"
@@ -123,7 +146,8 @@ export const Auth = () => {
                     minLength   ="8" 
                     maxLength   ="32"
                     autoComplete="off" 
-                    required />
+                    // required
+                    />
 
                 <input 
                     type     ="submit"
@@ -137,12 +161,12 @@ export const Auth = () => {
                     onClick ={() => slide()}>
                     no account?
                 </button>
-
-                {
-                error && <span>{error}</span>
-                }
-
             </form>
+
+            {
+                error && <span>{error}</span>
+            }
+
         </div>
     )
 }

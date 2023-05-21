@@ -3,16 +3,18 @@ import { signUp, signIn, signOut, isAuth } from '../../util/fetch/Auth';
 import { updateAccount }                   from '../../util/fetch/Users';
 
 const initialState = {
-    authenticated: false,
-    user_id      : null,
-    record_id    : null,
-    user_name    :"Guest",
-    email        : null,
-    password     : null,
-    date_of_birth: null,
+    authenticated: false, //--
     credit       : 0,
-    error        : null,
-    status       :'idle'
+    date_of_birth: null,
+    email        : null,
+    error        : null, //--
+    password     : null,
+    record_id    : null,
+    refferal_code: null,
+    status       :'idle', //--
+    trans_ids    :[],
+    user_id      : null,
+    user_name    :"Guest",
 };
 
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
@@ -73,15 +75,18 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
-            const {user_id,user_name,email,password,date_of_birth,credit} = action.payload;
+            const {user1,json}  = action.payload;
             state.authenticated =  true;
-            state.user_id       =  user_id;
-            state.user_name     =  user_name;
-            state.email         =  email;
-            state.password      =  password;
-            state.date_of_birth =  date_of_birth;
-            state.credit        =  credit;
-            state.status        = 'succeeded';
+            state.user_id       =  user1.user_id;
+            state.user_name     =  user1.user_name;
+            state.record_id     =  user1.record_id;
+            state.trans_ids     =  json.map((result) => result.id);
+            state.email         =  user1.email;
+            state.refferal_code =  user1.refferal_code;
+            state.password      =  user1.password;
+            state.date_of_birth =  user1.date_of_birth;
+            state.credit        =  user1.credit;
+            state.status        = 'succeeded';  
         })
         .addCase(sign_in.rejected,  (state, action)  => {
             state.error         =  action.error.message;
@@ -106,22 +111,15 @@ const authSlice = createSlice({
             state.status        = 'failed';
         })
         //Is Auth============================================
-        .addCase(is_Auth.pending,    (state)         => {
-            state.status        = 'loading';
-        })
+        // .addCase(is_Auth.pending,    (state)         => {
+        //     state.status        = 'loading';
+        // })
         .addCase(is_Auth.fulfilled,  (state, action) => {
-            const {user_id,user_name,email,password,date_of_birth,credit} = action.payload;
             state.authenticated =  true;
-            state.user_id       =  user_id;
-            state.user_name     =  user_name;
-            state.email         =  email;
-            state.password      =  password;
-            state.date_of_birth =  date_of_birth;
-            state.credit        =  credit;
             state.status        = 'succeeded';
         })
         .addCase(is_Auth.rejected,   (state, action) => {
-            state.error         =  action.error.message;
+            // state.error         =  action.error.message;
             state.status        = 'failed';
         })
         //Update Data========================================

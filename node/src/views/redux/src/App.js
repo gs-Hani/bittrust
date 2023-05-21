@@ -5,22 +5,24 @@ import {
   Route
 } from 'react-router-dom';
 
-import { Auth } from './features/auth/Auth';
-import { TransRecord } from './features/transRecords/TransRecords';
+import { Header }       from './components/header/Header';
+import { Auth }         from './features/auth/Auth';
+import { TransRecords } from './features/transRecords/TransRecords';
+import { Profile }      from './features/profile/Profile';
 import './App.css'
 
 function App() {
   return (
     <div className="App"> 
       <Router className='Router'>
-        {/* <Header id='Header'/> */}
+        <Header/>
         <main>
           <Routes>
-            <Route exact path="/auth"       element={<Auth/>}       />
-            <Route       path="/"           element={<TransRecord/>}/>
-            {/* <Route       path="/:productId" element={<RefCode/>}    />
-            <Route       path="/profile"    element={<Profile/>}    />
-            <Route       path="/checkout"   element={<Checkout/>}   /> */}
+            <Route       path="/:refCode?"    element={<Auth/>}        />
+            <Route       path="/transRecords" element={<TransRecords/>}/>
+            {/* <Route       path="/:productId" element={<RefCode/>}    />*/}
+            <Route       path="/profile"      element={<Profile/>}     />
+            {/* <Route       path="/checkout"   element={<Checkout/>}   />  */}
           </Routes>
         </main> 
           

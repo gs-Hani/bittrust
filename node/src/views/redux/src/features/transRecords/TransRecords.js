@@ -3,14 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { loadRecords } from './transRecordsSlice';
 
-export const TransRecord = () => {
+export const TransRecords = () => {
     const   dispatch    = useDispatch();
     const { records }   = useSelector(state => state.transRecords);
-    const { record_id } = useSelector(state => state.auth);
+    const { trans_ids }  = useSelector(state => state.auth);
     //===========================================================================
     useEffect(() =>{
-        dispatch(loadRecords(record_id),[record_id]);
-    });
+        console.log('dispatching');
+        dispatch(loadRecords(trans_ids));
+    },[dispatch]);
     //===========================================================================
     return (
         <table>
@@ -22,7 +23,7 @@ export const TransRecord = () => {
                 </tr>
             </thead>
             <tbody>
-                {records.map((record) => (<TableRow key={record.hs_object_id} record={record}/>))}
+                {records.map((record) => (<TableRow key={record.hs_object_id} record={record}/>)).reverse()}
             </tbody>
         </table>
     )
@@ -32,7 +33,7 @@ const TableRow = (data) => {
     const { record } = data; 
     return (
         <tr>
-            <td>{record.closedate}</td>
+            <td>{record.closedate.split('T')[0]}</td>
             <td>{record.amount}</td>
             <td>{record.hs_object_id}</td>
         </tr>

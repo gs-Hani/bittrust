@@ -1,22 +1,17 @@
-import { createSlice, createAsyncThunk }   from '@reduxjs/toolkit';
+import { useSelector }                   from 'react-redux';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
+import { fetchRecordsIDs,fetchRecordDetails} from '../../util/fetch/Records';
 
 const initialState = {
-    records: [
-        {
-          amount:               5356.2880000000005,
-          closedate:           '2022-03-09',
-          createdate:          '2022-03-09',
-          hs_lastmodifieddate: '2022-03-09',
-          hs_object_id:         8178124928
-        }
-    ],
+    records      :[],
     error        : null,
     status       :'idle'
 };
 
-export const loadRecords = createAsyncThunk('transRecords/loadRecords', async (record_id) => {
-    const  ids = await fetchRecordsIDs(record_id);
-    const  res = await ids.map(id => fetchRecordDetails(id));
+export const loadRecords = createAsyncThunk('transRecords/loadRecords', async (trans_ids) => {
+    console.log(trans_ids);
+    const  res = await trans_ids.map(id => fetchRecordDetails(id));
     return res;
 })
 
