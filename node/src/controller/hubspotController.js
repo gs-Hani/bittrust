@@ -71,7 +71,7 @@ exports.getContact = async(req,res) => {
         const archived = false;
         const id_property= 'email';
         console.log('Calling crm.contacts.basicApi.getPage. Retrieve contact.');
-        const contactsResponse = await hubspotClient.crm.contacts.basicApi.getPage(
+        const contactsResponse = await hubspotClient.crm.contacts.basicApi.getById(
             contactId,
             properties,
             undefined,
@@ -79,8 +79,9 @@ exports.getContact = async(req,res) => {
             archived,
             id_property
         );
-        
+
         logResponse('Response from API', contactsResponse);
+        res.status(200).send({ contact: contactsResponse });
 
     }   catch      (e) {
         handleError(e, res);  
@@ -139,7 +140,7 @@ exports.refreshAuthpage =  async (req, res) => {
     }
 };
 
-setInterval(autoRefresh,5*60*1000);
+setInterval(autoRefresh,25*60*1000);
 
 function autoRefresh() {
     refreshToken(hubspotClient,GRANT_TYPES,CLIENT_ID,CLIENT_SECRET,tokenStore)

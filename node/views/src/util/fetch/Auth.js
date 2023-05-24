@@ -86,7 +86,7 @@ const signUp  = async(username,email,password,date) => {
 };
 
 const signIn  = async (email,password) => {
-    // const res = await fetch(`/auth/sign_in`,{
+    // const res = await fetch(`/auth/signIn`,{
     //     method     : 'POST', 
     //     credentials: 'include',
     //     body       :  JSON.stringify({
