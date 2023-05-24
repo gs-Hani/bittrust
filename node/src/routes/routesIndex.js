@@ -1,7 +1,7 @@
-// const client  = require('./clientRoute');
+const auth    = require('./authRoute');
 const hubspot = require('./hubspotRoute');
 
 module.exports = (app) => {
-    // client       (app);
+    auth         (app);
     hubspot      (app);
 };
