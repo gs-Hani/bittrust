@@ -1,7 +1,7 @@
 const router = require('../routes/routesIndex');
 
-
 module.exports = async (app) => {
+
     router(app);
     
     // Error Handler

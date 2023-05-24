@@ -1,9 +1,7 @@
-const admin  = require('./adminRoutes');
-const auth   = require('./authRoutes')
-const client = require('./clientRoutes');
+// const client  = require('./clientRoute');
+const hubspot = require('./hubspotRoute');
 
 module.exports = (app) => {
-    admin        (app);
-    auth         (app);
     // client       (app);
+    hubspot      (app);
 };
