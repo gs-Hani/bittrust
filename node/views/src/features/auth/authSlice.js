@@ -4,17 +4,14 @@ import { updateAccount }                   from '../../util/fetch/Users';
 
 const initialState = {
     authenticated: false, //--
-    credit       : 0,
-    date_of_birth: null,
+    credit       : 0,     //-- from DB
     email        : null,
-    error        : null, //--
+    error        : null,  //--
     password     : null,
-    record_id    : null,
-    refferal_code: null,
+    refferal_code: null,  //-- from DB
     status       :'idle', //--
-    trans_ids    :[],
-    user_id      : null,
-    user_name    :"Guest",
+    transactions :[],     //-- from HS
+    userId       : null,  //-- from DB
 };
 
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
@@ -24,6 +21,7 @@ export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
 });
 
 export const  sign_in  = createAsyncThunk('auth/sign_in',    async (data) => {
+    console.log('siging in')
     const/*--------------------*/{ email, password } = data;
     const  response = await signIn(email, password);
     return response;
@@ -56,13 +54,11 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_up.fulfilled, (state, action)  => {
-            const {user_id,user_name,email,password,date_of_birth,credit} = action.payload
+            const {user_id,email,password,credit} = action.payload
             state.authenticated =  true;
-            state.user_id       =  user_id;
-            state.user_name     =  user_name;
+            state.userId        =  user_id;
             state.email         =  email;
             state.password      =  password;
-            state.date_of_birth =  date_of_birth;
             state.credit        =  credit;
             state.status        = 'succeeded';
         })
@@ -75,18 +71,15 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
-            const {user1,json}  = action.payload;
+            const {user1}  = action.payload;
             state.authenticated =  true;
-            state.user_id       =  user1.user_id;
-            state.user_name     =  user1.user_name;
-            state.record_id     =  user1.record_id;
-            state.trans_ids     =  json.map((result) => result.id);
-            state.email         =  user1.email;
-            state.refferal_code =  user1.refferal_code;
-            state.password      =  user1.password;
-            state.date_of_birth =  user1.date_of_birth;
             state.credit        =  user1.credit;
-            state.status        = 'succeeded';  
+            state.email         =  user1.email;
+            state.password      =  user1.password;
+            state.refferal_code =  user1.refferal_code;
+            state.status        = 'succeeded';
+            state.transactions  =  user1.transactions;
+            state.userId        =  user1.user_id;  
         })
         .addCase(sign_in.rejected,  (state, action)  => {
             state.error         =  action.error.message;
