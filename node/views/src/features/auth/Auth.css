@@ -1,9 +1,14 @@
+
+body{
+  background-color: rgb(20,4,88);
+}
 .auth {
     background-color: rgb(253, 245, 235);
   max-width: 450px;
   margin:auto;
   padding: 20px;
-  box-shadow: 0px 2px 6px rgba(189, 181, 148, 0.884);
+  box-shadow: 0px 2px 6px rgb(1, 1, 21);
+  border-radius: 8%;
 }
 .auth{
   margin-top: 70px;
@@ -14,7 +19,6 @@
     justify-content: center;
     text-align: center;
 }
-
 .auth h2 {
   text-align: center;
   color: #1f1468;
@@ -37,7 +41,6 @@ input:hover {
   font-size: 15px;
   box-shadow: 0px 1px 4px rgba(252, 224, 177, 0.884);
 }
-
 .auth input[type="text"]:focus,
 .auth input[type="email"]:focus,
 .auth input[type="password"]:focus,
@@ -45,7 +48,6 @@ input:hover {
   outline: none;
   box-shadow: 0px 1px 8px rgba(136, 87, 22, 0.952);
 }
-
 .auth input[type="submit"] {
   background-color: #0c095e;
   color: rgb(249, 247, 228);
@@ -55,7 +57,6 @@ input:hover {
 .auth input:hover[type="submit"] {
 background-color:#0d0c3a;
 }
-
 .auth button {
   background-color: transparent;
   width: 450px;
@@ -64,15 +65,33 @@ background-color:#0d0c3a;
   cursor: pointer;
   text-decoration: underline;
 }
-
 .auth span {
   color: red;
 }
-
 .auth #slide {
   background-color: transparent;
   border: none;
   color: #333;
   cursor: pointer;
   text-decoration: underline;
+}
+@media screen and (max-width: 600px) {
+  .auth {
+    max-width: 90%;
+    padding: 10px;
+    border-radius: 5%;
+    box-shadow: none;
+    
+  }
+  .auth input[type="text"],
+  .auth input[type="email"],
+  .auth input[type="password"],
+  .auth input[type="date"],
+  .auth input[type="submit"],
+  .auth button {
+    width: 95%;
+  }
+  .auth input[type="submit"] {
+    width: 100%;
+  }
 }
