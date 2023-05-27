@@ -27,6 +27,7 @@ export const Auth = () => {
   };
 
   const login = (email, password) => {
+    console.log('dispatch sign_in')
     dispatch(sign_in({ email, password }));
   };
 
@@ -79,6 +80,7 @@ export const Auth = () => {
             onChange={(e) => setEmail(e.target.value)}
             size="25"
             autoComplete="on"
+            // required
           />
 
           <input

@@ -1,7 +1,11 @@
+const bodyParser  =  require('body-parser');
+
 const router = require('../routes/routesIndex');
 
 module.exports = async (app) => {
-
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true,}));
+    app.set('trust proxy', 1);
     router(app);
     
     // Error Handler

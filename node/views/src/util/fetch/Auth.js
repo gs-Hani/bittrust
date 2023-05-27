@@ -11,14 +11,11 @@ function generateCode () {
 
 //TO BE DELETED ===================================
 
-const user1 = 
+let user1 = 
 {
     user_id      :  1,
-    record_id    :  3201,
-    user_name    : "Guest",
-    email        : "anyfieldmusic@gmail.com",
+    email        : "some_email@gmail.com",
     password     :  123,
-    date_of_birth:  null,
     credit       :  0,
     refferal_code:  generateCode()
 };
@@ -86,19 +83,22 @@ const signUp  = async(username,email,password,date) => {
 };
 
 const signIn  = async (email,password) => {
-    // const res = await fetch(`/auth/signIn`,{
-    //     method     : 'POST', 
-    //     credentials: 'include',
-    //     body       :  JSON.stringify({
-    //                   username: email,
-    //                   password: password,    
-    //     }),
-    //     headers    : {
-    //         "Content-Type": "application/json"
-    //     } 
-    // });
-    // const  json = await res.json();
-    return {user1,json:data.associations.deals.results};
+  console.log('fetching sign in');
+    const res = await fetch(`/auth/signIn`,{
+        method     : 'POST', 
+        credentials: 'include',
+        body       :  JSON.stringify({
+                      username: email,
+                      password: password,    
+        }),
+        headers    : {
+            "Content-Type": "application/json"
+        } 
+    });
+    const  json = await res.json();
+    user1.transactions = json;
+    console.log(user1)
+    return {user1};
 };
 
 const signOut = async (user) => {

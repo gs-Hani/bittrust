@@ -46,13 +46,13 @@ exports.getContacts = async (req, res) => {
         // Get first contacts page
         // GET /crm/v3/objects/contacts
         // https://developers.hubspot.com/docs/api/crm/contacts
-        console.log('Calling crm.contacts.basicApi.getPage. Retrieve contacts.');
+        // console.log('Calling crm.contacts.basicApi.getPage. Retrieve contacts.');
         const contactsResponse = await hubspotClient.crm.contacts.basicApi.getPage(
         OBJECTS_LIMIT,
         undefined,
         properties
         );
-        logResponse('Response from API', contactsResponse);
+        // logResponse('Response from API', contactsResponse);
 
         res.render('contacts', {
         tokenStore,
@@ -63,14 +63,14 @@ exports.getContacts = async (req, res) => {
     }
 };
 
-exports.getContact = async(req,res) => {
+exports.getContact = async(req,res,next) => {
     try {
-        const contactId = "galanghoingocanada@gmail.com";
+        const contactId = req.body.username;
         const properties = ["hs_object_id"];
         const associations = ["deals"];
         const archived = false;
         const id_property= 'email';
-        console.log('Calling crm.contacts.basicApi.getPage. Retrieve contact.');
+        // console.log('Calling crm.contacts.basicApi.getById. Retrieve contact.');
         const contactsResponse = await hubspotClient.crm.contacts.basicApi.getById(
             contactId,
             properties,
@@ -81,12 +81,53 @@ exports.getContact = async(req,res) => {
         );
 
         logResponse('Response from API', contactsResponse);
-        res.status(200).send({ contact: contactsResponse });
+        req.contact = contactsResponse ;
+        next();
 
     }   catch      (e) {
         handleError(e, res);  
     }
-}; 
+};
+
+const getDeal = async (id) => {
+    try {
+        const dealId = id;
+        const properties = [ "closedate", "amount" ];
+        const propertiesWithHistory = undefined;
+        const associations = undefined;
+        const archived = false;
+        const idProperty = undefined;
+        // console.log('Calling crm.deals.basicApi.getById. Retrieve deal.');
+        const dealsResponse = await hubspotClient.crm.deals.basicApi.getById(
+            dealId,
+            properties,
+            propertiesWithHistory,
+            associations,
+            archived,
+            idProperty
+        );
+        // logResponse('Request contact', req.contact);
+        // logResponse('Response from API', dealsResponse);
+        return {id    :dealsResponse.id,
+                amount:dealsResponse.properties.amount,
+                date  :dealsResponse.properties.closedate.split('T')[0]};
+
+    }   catch      (e) {
+        handleError(e,res);
+    }
+};
+
+exports.getDeals = async (req,res) => {
+    try {
+        let deals = req.contact.associations.deals.results;
+        for (let i=0; i<deals.length; i++) {
+            deals[i] = await getDeal(deals[i].id);
+        }
+        res.status(200).send(deals);
+    }   catch      (e) {
+        handleError(e,res);
+    }
+}
 
 exports.authorize = async (req, res) => {
     // Use the client to get authorization Url
