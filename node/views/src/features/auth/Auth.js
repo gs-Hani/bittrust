@@ -95,7 +95,10 @@ export const Auth = () => {
             autoComplete="off"
           />
 
-          <input type="submit" id="Submit" value="Log in" />
+          <input type="submit" 
+          id="Submit" 
+          value="Log in"
+           />
 
           <button type="button" id="slide" onClick={toggleSignUp}>
             no account?

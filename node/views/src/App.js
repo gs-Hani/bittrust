@@ -14,14 +14,14 @@ import './App.css'
 function App() {
   return (
     <div className="App"> 
-      <Router className='Router'>
+      <Router>
         <Header/>
         <main>
           <Routes>
-            <Route       path="/:refCode?"    element={<Auth/>}        />
+            <Route       path="/"    element={<Auth/>}        />
+            <Route       path="/profile"      element={<Profile/>}     />
             <Route       path="/transRecords" element={<TransRecords/>}/>
             {/* <Route       path="/:productId" element={<RefCode/>}    />*/}
-            <Route       path="/profile"      element={<Profile/>}     />
             {/* <Route       path="/checkout"   element={<Checkout/>}   />  */}
           </Routes>
         </main> 

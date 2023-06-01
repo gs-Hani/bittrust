@@ -71,14 +71,14 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
-            const {user1}  = action.payload;
+            const {user1, deals}  = action.payload;
             state.authenticated =  true;
             state.credit        =  user1.credit;
             state.email         =  user1.email;
             state.password      =  user1.password;
             state.refferal_code =  user1.refferal_code;
             state.status        = 'succeeded';
-            state.transactions  =  user1.transactions;
+            state.transactions  =  deals;
             state.userId        =  user1.user_id;  
         })
         .addCase(sign_in.rejected,  (state, action)  => {
