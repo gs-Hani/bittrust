@@ -62,6 +62,10 @@ export const Profile = () => {
                 <div id="updateProfile">
                      
                 </div>
+                <form method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
+                    <input type='file' name='content' id='file'/>
+                    <input class='input-button' type='submit' value='Upload'/>
+                </form>
             </div>
             
         )

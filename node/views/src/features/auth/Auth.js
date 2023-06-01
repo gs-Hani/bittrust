@@ -15,8 +15,9 @@ export const Auth = () => {
   const dispatch = useDispatch();
   const { authenticated } = useSelector((state) => state.auth);
   const { error } = useSelector((state) => state.auth);
-
+  
   useEffect(() => {
+    console.log(authenticated);
     if (authenticated) {
       navigate('/transRecords');
     }

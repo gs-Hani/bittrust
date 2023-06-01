@@ -46,3 +46,15 @@ exports.handleError = (e, res) => {
       `/error?msg=${JSON.stringify(e, Object.getOwnPropertyNames(e), 2)}`
     );
 };
+
+const fs = require('fs');
+
+exports.fileToBuffer = (file) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(file.path, (err, data) => {
+        if (err) return reject(err)
+  
+        resolve(data)
+      })
+    })
+};

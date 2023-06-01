@@ -1,15 +1,13 @@
-import { useEffect } from 'react';
-import   React       from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import './TransRecords.css'
+import   React, {useEffect} from 'react';
+import { useSelector }      from 'react-redux';
+import { useNavigate }      from 'react-router-dom';
+import './TransRecords.css';
 
 export const TransRecords = () => {
 
     const { transactions } = useSelector(state => state.auth);
-    const { authenticated } = useSelector(state => state.auth);
+    const { authenticated } = useSelector((state) => state.auth);
     const navigate = useNavigate();
-
     useEffect(() => {
         if (!authenticated) {
           navigate('/');
