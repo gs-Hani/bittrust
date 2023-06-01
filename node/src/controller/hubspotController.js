@@ -3,7 +3,7 @@ const hubspot = require('@hubspot/api-client');
 const hubspotClient = new hubspot.Client();
 const { isAuthorized,isTokenExpired }            = require('../services/authService');
 const { refreshToken,prepareContactsContent,
-        logResponse,handleError }                = require('../services/hubspotService');
+        logResponse,handleError,fileToBuffer }   = require('../services/hubspotService');
 
 const { HUBSPOT } =  require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
@@ -27,7 +27,8 @@ exports.checkEnv = (req, res, next) => {
     next();
 };
 
-let   tokenStore = {};
+let tokenStore = {};
+let accessToken
 
 const GRANT_TYPES = {
     AUTHORIZATION_CODE: 'authorization_code',
@@ -161,6 +162,7 @@ exports.getAccesstoken = async (req, res) => {
 
     tokenStore = getTokensResponse;
     tokenStore.updatedAt = Date.now();
+    accessToken = getTokensResponse.accessToken
 
     // Set token for the
     // https://www.npmjs.com/package/@hubspot/api-client
@@ -186,3 +188,58 @@ setInterval(autoRefresh,25*60*1000);
 function autoRefresh() {
     refreshToken(hubspotClient,GRANT_TYPES,CLIENT_ID,CLIENT_SECRET,tokenStore)
 };
+
+const formidable = require('formidable');
+const debug      = require('debug')('file_upload:index');
+const Hubspot    = require('hubspot');
+
+exports.uploadImage = async (req, res, next) => {
+    try {
+        let hubspot = new Hubspot({ accessToken: accessToken })
+        new formidable.IncomingForm().parse(req, async (err, fields, files) => {
+
+            if (err) throw err;
+
+            const { contactID } = fields;
+            const fileName      = `${contactID}`;
+            const folderPath    = 'IDs';
+            const content       = await fileToBuffer(files.content._writeStream);
+            const option        = {
+                access: 'PUBLIC_NOT_INDEXABLE',
+                overwrite: true,
+                duplicateValidationStrategy: 'NONE',
+                duplicateValidationScope:'EXACT_FOLDER'
+            };
+
+            const uploadingResult = await hubspot.files.upload({ content,fileName,folderPath,options:option});
+            const photoID         = uploadingResult.objects[0].id;
+
+            req.body.photoID = photoID;
+            req.body.contactID = contactID;
+
+            next();
+
+        });
+    }   catch (e) {
+        debug (e)
+    }
+};
+
+exports.createNote = async (req,res) => {
+    try {
+        let hubspot = new Hubspot({ accessToken: accessToken });
+        const { photoID,contactID } = req.body;
+        const   noteEngagement = {
+            engagement  : { active: true, type: "NOTE" },
+            associations: { contactIds: [contactID] },
+            metadata    : { body: 'Attaching file to Deal.'},
+            attachments : [ { id:photoID } ],
+            json: true
+        };
+        const apiResponse = await hubspot.engagements.create(noteEngagement);
+        console.log(apiResponse);
+        res.status(201).send(apiResponse);
+      } catch (e) {
+        debug (e)
+      }
+}
