@@ -5,17 +5,13 @@ import './TransRecords.css';
 
 export const TransRecords = () => {
 
-    const { transactions } = useSelector(state => state.auth);
+    const { transactions }  = useSelector(state => state.auth);
     const { authenticated } = useSelector((state) => state.auth);
-    const navigate = useNavigate();
-    useEffect(() => {
-        if (!authenticated) {
-          navigate('/');
-        }
-      }, [authenticated, navigate]);
+    const   navigate        = useNavigate();
+    useEffect(() => { if (!authenticated) { navigate('/'); } }, [authenticated, navigate]);
     //===========================================================================
     return (
-        <div class="table-container">
+        <div className="table-container">
         <table>
             <thead>
                 <tr>

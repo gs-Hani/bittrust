@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk }   from '@reduxjs/toolkit';
-import { signUp, signIn, signOut, isAuth } from '../../util/fetch/Auth';
-import { updateAccount }                   from '../../util/fetch/Users';
+import { signUp, signIn, signOut, isAuth } from '../../util/fetch/fetchAuth';
+import { updateAccount }                   from '../../util/fetch/fetchUsers';
 
 const initialState = {
-    authenticated: false, //--
-    credit       : 0,     //-- from DB
-    email        : null,
-    error        : null,  //--
-    password     : null,
-    refferal_code: null,  //-- from DB
-    status       :'idle', //--
+    authenticated: false, 
+    credit       : 0,     //-- from HS
+    contactID    : null,  //-- from HS
+    email        : null,  //-- from HS
+    error        : null,  
+    name         :'Guest',//-- from HS
+    password     : null,  //-- from HS
+    refferal_code: null,  //-- from HS
+    status       :'idle', 
     transactions :[],     //-- from HS
-    userId       : null,  //-- from DB
 };
 
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
@@ -76,10 +77,10 @@ const authSlice = createSlice({
             state.credit        =  user1.credit;
             state.email         =  user1.email;
             state.password      =  user1.password;
+            state.contactID     =  user1.contactID;
             state.refferal_code =  user1.refferal_code;
             state.status        = 'succeeded';
-            state.transactions  =  deals;
-            state.userId        =  user1.user_id;  
+            state.transactions  =  deals; 
         })
         .addCase(sign_in.rejected,  (state, action)  => {
             state.error         =  action.error.message;

@@ -15,7 +15,7 @@ export const Profile = () => {
     const  navigate                     = useNavigate();
     const  dispatch                     = useDispatch();
     const  profile                      = useSelector(state => state.auth);
-
+    console.log(profile);
     useEffect(() => { if(!profile.authenticated) {navigate('/');} },  [navigate,profile.authenticated]);
     useEffect(() => console.log(profile.status), [profile.status]);
 

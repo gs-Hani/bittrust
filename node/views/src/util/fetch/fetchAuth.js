@@ -1,7 +1,7 @@
 //TO BE MOVED ELSEWHERE LATER========================
 function generateCode () {
   const length  = 6;
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const charset = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
   let refCode = '';
   for (let i = 0, n = charset.length; i < length; ++i) {
     refCode += charset.charAt(Math.floor(Math.random() * n));
@@ -13,7 +13,7 @@ function generateCode () {
 
 let user1 = 
 {
-    user_id      :  1,
+    contactID    :  1,
     email        : "some_email@gmail.com",
     password     :  123,
     credit       :  0,

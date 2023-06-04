@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector }   from 'react-redux';
+import { useNavigate }                from 'react-router-dom';
 
 import './Auth.css';
-import { sign_up, sign_in } from './authSlice';
-import { matchPassword } from '../../util/usefulFunctions';
+import { sign_up, sign_in }           from './authSlice';
+import { matchPassword }              from '../../util/usefulFunctions';
 
 export const Auth = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [ref, setRef] = useState();
+  const [email, setEmail]           = useState();
+  const [password, setPassword]     = useState();
+  const [ref, setRef]               = useState();
   const [showSignUp, setShowSignUp] = useState(true);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { authenticated } = useSelector((state) => state.auth);
-  const { error } = useSelector((state) => state.auth);
+  const  navigate                   = useNavigate();
+  const  dispatch                   = useDispatch();
+  const { authenticated }           = useSelector((state) => state.auth);
+  const { error }                   = useSelector((state) => state.auth);
   
-  useEffect(() => {
-    console.log(authenticated);
-    if (authenticated) {
-      navigate('/transRecords');
-    }
+  useEffect(() => { console.log(authenticated);
+    if (authenticated) { navigate('/transRecords'); }
   }, [authenticated, navigate]);
 
   const register = async (email, password, date) => {
@@ -133,10 +130,7 @@ export const Auth = () => {
             id="password"
             name="password"
             placeholder="password"
-            onChange={(e) => {
-              matchPassword(e.target.value);
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
             minLength="8"
             maxLength="32"
             autoComplete="off"
