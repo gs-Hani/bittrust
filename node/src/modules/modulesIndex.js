@@ -1,10 +1,11 @@
-const bodyParser      =  require('body-parser');
+// const bodyParser      =  require('body-parser');
 // const passportModule  = require('./passport');
-const router = require('../routes/routesIndex');
+const express = require('express');
+const router  = require('../routes/routesIndex');
 
 module.exports = async (app) => {
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true,}));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true,}));
     app.set('trust proxy', 1);
 
     // const { App,passport }  = passportModule(app);

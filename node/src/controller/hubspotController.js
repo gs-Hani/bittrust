@@ -45,7 +45,7 @@ exports.getContacts = async (req, res) => {
 
 exports.getContact = async(req,res,next) => {
     try {
-        const contactId = req.body.username;
+        const contactId = req.body.email;
         // console.log('Calling crm.contacts.basicApi.getById. Retrieve contact.');
         const contactsResponse = await readContact(contactId);
 
@@ -53,14 +53,6 @@ exports.getContact = async(req,res,next) => {
         req.contact = contactsResponse ;
         next();
 
-    }   catch      (e) {
-        handleError(e, res);
-    }
-};
-
-exports.createContact = async(req,res,next) => {
-    try {
-        const {} = req.body;
     }   catch      (e) {
         handleError(e, res);
     }
@@ -132,25 +124,42 @@ const formidable = require('formidable');
 const debug      = require('debug')('file_upload:index');
 const Hubspot    = require('hubspot');
 
+const path     = require('path');
+const image    = path.join(__dirname, '../../resources/Bittrust.jpg');
+
 exports.uploadImage = async (req, res, next) => {
     try {
+        console.log('uploadImage req.body',req.body);
         let hubspot = new Hubspot({ accessToken: accessToken })
+        if(!req.body.contactID) {
         new formidable.IncomingForm().parse(req, async (err, fields, files) => {
-
+            console.log('err',err);
+            console.log('fields',fields);
+            console.log('files',files);
+            console.log('uploading image...2');
             if (err) throw err;
-
+    
             const { contactID } = fields;
             const   fileName    = `${contactID}`;
-            
-            const uploadingResult = await writeImage({hubspot,fileName,files});
+            console.log('uploadImage fileName',fileName);
+            const uploadingResult = await writeImage({hubspot,fileName,files:files.content._writeStream});
             const photoID         = uploadingResult.objects[0].id;
-
-            req.body.photoID = photoID;
-            req.body.contactID = contactID;
-
+            console.log('uploadImage photoID',photoID);
+            req.body = { photoID,contactID };
+            console.log('uploadImage req.body',req.body);
             next();
-
-        });
+        }); 
+        } else {
+            const { contactID } = req.body;
+            const   fileName    = `${contactID}`;
+            console.log('uploadImage fileName',fileName);
+            const uploadingResult = await writeImage({hubspot,fileName});
+            const photoID         = uploadingResult.objects[0].id;
+            console.log('uploadImage photoID',photoID);
+            req.body = { photoID,contactID };
+            console.log('uploadImage req.body',req.body);
+            next();
+        }  
     }   catch (e) {
         debug (e)
     }
@@ -160,9 +169,9 @@ exports.createNote = async (req,res) => {
     try {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { photoID,contactID } = req.body;
-        const apiResponse = await writeNote({hubspot,photoID,contactID})
-        console.log(apiResponse);
-        res.status(201).send(apiResponse);
+        const createNoteResponse = await writeNote({hubspot,photoID,contactID})
+        console.log('createNoteResponse',createNoteResponse);
+        res.status(201).send(createNoteResponse);
       } catch (e) {
         debug (e)
       }

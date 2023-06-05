@@ -88,6 +88,21 @@ exports.readContact = async(contactId) => {
   id_property
 )};
 
+exports.writeContact = async(data) => {
+  const properties = {
+    email        : data.email,
+    password     : data.password,
+    referral_code: data.referral_code,
+  };
+  try {
+    return await hubspotClient.crm.contacts.basicApi.create({properties,associations:[]});
+  } catch (e) {
+    e.message === 'HTTP request failed'
+    ? console.error(JSON.stringify(e.response, null, 2))
+    : console.error(e)
+  }
+};
+
 //DEALS================================
 exports.getDeal = async (id) => {
   try {
@@ -118,9 +133,14 @@ exports.getDeal = async (id) => {
 };
 
 //FILES===========================
+const   path     = require('path');
+const   image    = path.join(__dirname, '../../resources/Bittrust.jpg');
+
 exports.writeImage = async (data) => {
   const { hubspot,files,fileName } = data;
-  const content       = await fileToBuffer(files.content._writeStream);
+  let upload;
+  files? upload = files : upload = image;
+  const content       = await fileToBuffer(upload);
   const folderPath    = 'IDs';
   const option        = {
     access: 'PUBLIC_NOT_INDEXABLE',
@@ -166,7 +186,7 @@ const fs = require('fs');
 
 function fileToBuffer (file) {
     return new Promise((resolve, reject) => {
-      fs.readFile(file.path, (err, data) => {
+      fs.readFile(file.path || file, (err, data) => {
         if (err) return reject(err)
   
         resolve(data)
