@@ -1,15 +1,11 @@
 const _ = require('lodash');
-const hubspot = require('@hubspot/api-client');
-const hubspotClient = new hubspot.Client();
 const { isAuthorized,isTokenExpired }            = require('../services/authService');
-const { refreshToken,prepareContactsContent,
-        logResponse,handleError,fileToBuffer }   = require('../services/hubspotService');
+const { refreshToken,prepareContactsContent,readContacts,readContact,getDeal,getToken,writeImage,writeNote,
+        logResponse,handleError,getAuthURL,setAccessToken }   = require('../services/hubspotService');
 
 const { HUBSPOT } =  require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
 const   CLIENT_SECRET = HUBSPOT.secret;
-const   REDIRECT_URI  = HUBSPOT.callbackUrl;
-const   SCOPES        = HUBSPOT.scopes.split(/ |, ?|%20/).join(' ');
 
 
 exports.checkEnv = (req, res, next) => {
@@ -30,30 +26,13 @@ exports.checkEnv = (req, res, next) => {
 let tokenStore = {};
 let accessToken
 
-const GRANT_TYPES = {
-    AUTHORIZATION_CODE: 'authorization_code',
-    REFRESH_TOKEN: 'refresh_token',
-};
-
-const OBJECTS_LIMIT = 30;
-
 exports.getContacts = async (req, res) => {
     try {
         if (!isAuthorized(tokenStore)) return res.render('login');
-        if (isTokenExpired(tokenStore)) await refreshToken(hubspotClient,GRANT_TYPES,CLIENT_ID,CLIENT_SECRET,tokenStore);
-
-        const properties = ['firstname', 'lastname', 'company'];
-
-        // Get first contacts page
-        // GET /crm/v3/objects/contacts
-        // https://developers.hubspot.com/docs/api/crm/contacts
-        // console.log('Calling crm.contacts.basicApi.getPage. Retrieve contacts.');
-        const contactsResponse = await hubspotClient.crm.contacts.basicApi.getPage(
-        OBJECTS_LIMIT,
-        undefined,
-        properties
-        );
-        // logResponse('Response from API', contactsResponse);
+        if (isTokenExpired(tokenStore)) await refreshToken(tokenStore,accessToken);
+        
+        const contactsResponse = await readContacts();
+        logResponse('Response from API', contactsResponse);
 
         res.render('contacts', {
         tokenStore,
@@ -66,65 +45,26 @@ exports.getContacts = async (req, res) => {
 
 exports.getContact = async(req,res,next) => {
     try {
-        const contactId = req.body.username;
-        const properties = ["hs_object_id"];
-        const associations = ["deals"];
-        const archived = false;
-        const id_property= 'email';
+        const contactId = req.body.email;
         // console.log('Calling crm.contacts.basicApi.getById. Retrieve contact.');
-        const contactsResponse = await hubspotClient.crm.contacts.basicApi.getById(
-            contactId,
-            properties,
-            undefined,
-            associations,
-            archived,
-            id_property
-        );
+        const contactsResponse = await readContact(contactId);
 
         logResponse('Response from API', contactsResponse);
         req.contact = contactsResponse ;
         next();
 
     }   catch      (e) {
-        handleError(e, res);  
-    }
-};
-
-const getDeal = async (id) => {
-    try {
-        const dealId = id;
-        const properties = [ "closedate", "amount" ];
-        const propertiesWithHistory = undefined;
-        const associations = undefined;
-        const archived = false;
-        const idProperty = undefined;
-        // console.log('Calling crm.deals.basicApi.getById. Retrieve deal.');
-        const dealsResponse = await hubspotClient.crm.deals.basicApi.getById(
-            dealId,
-            properties,
-            propertiesWithHistory,
-            associations,
-            archived,
-            idProperty
-        );
-        // logResponse('Request contact', req.contact);
-        // logResponse('Response from API', dealsResponse);
-        return {id    :dealsResponse.id,
-                amount:dealsResponse.properties.amount,
-                date  :dealsResponse.properties.closedate.split('T')[0]};
-
-    }   catch      (e) {
-        handleError(e,res);
+        handleError(e, res);
     }
 };
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.contact.associations.deals.results;
+        let deals = req.body.account.associations.deals.results;
         for (let i=0; i<deals.length; i++) {
             deals[i] = await getDeal(deals[i].id);
-        }
-        res.status(200).send(deals);
+        };
+        res.status(200).send(req.body);
     }   catch      (e) {
         handleError(e,res);
     }
@@ -134,11 +74,7 @@ exports.authorize = async (req, res) => {
     // Use the client to get authorization Url
     // https://www.npmjs.com/package/@hubspot/api-client#obtain-your-authorization-url
     console.log('Creating authorization Url');
-    const authorizationUrl = hubspotClient.oauth.getAuthorizationUrl(
-        CLIENT_ID,
-        REDIRECT_URI,
-        SCOPES
-    );
+    const authorizationUrl = await getAuthURL();
     console.log('Authorization Url', authorizationUrl);
 
     res.redirect(authorizationUrl);
@@ -151,13 +87,7 @@ exports.getAccesstoken = async (req, res) => {
     // POST /oauth/v1/token
     // https://developers.hubspot.com/docs/api/working-with-oauth
     console.log('Retrieving access token by code:', code);
-    const getTokensResponse = await hubspotClient.oauth.tokensApi.createToken(
-        GRANT_TYPES.AUTHORIZATION_CODE,
-        code,
-        REDIRECT_URI,
-        CLIENT_ID,
-        CLIENT_SECRET
-    );
+    const getTokensResponse = await getToken(code);
     logResponse('Retrieving access token result:', getTokensResponse);
 
     tokenStore = getTokensResponse;
@@ -166,17 +96,18 @@ exports.getAccesstoken = async (req, res) => {
 
     // Set token for the
     // https://www.npmjs.com/package/@hubspot/api-client
-    hubspotClient.setAccessToken(tokenStore.accessToken);
+    setAccessToken(tokenStore.accessToken);
     res.redirect('/');
 };
 
 exports.emptyTokenStore = () => {
     tokenStore = {};
+    accessToken = null;
 };
 
 exports.refreshAuthpage =  async (req, res) => {
     try {
-        if (isAuthorized(tokenStore)) await refreshToken(hubspotClient,GRANT_TYPES,CLIENT_ID,CLIENT_SECRET,tokenStore);
+        if (isAuthorized(tokenStore)) await refreshToken(tokenStore,accessToken);
         res.redirect('/');
     } catch (e) {
         handleError(e, res);
@@ -186,7 +117,7 @@ exports.refreshAuthpage =  async (req, res) => {
 setInterval(autoRefresh,25*60*1000);
 
 function autoRefresh() {
-    refreshToken(hubspotClient,GRANT_TYPES,CLIENT_ID,CLIENT_SECRET,tokenStore)
+    refreshToken(tokenStore,accessToken)
 };
 
 const formidable = require('formidable');
@@ -195,31 +126,37 @@ const Hubspot    = require('hubspot');
 
 exports.uploadImage = async (req, res, next) => {
     try {
+        console.log('uploadImage req.body',req.body);
         let hubspot = new Hubspot({ accessToken: accessToken })
+        if(!req.body.contactID) {
         new formidable.IncomingForm().parse(req, async (err, fields, files) => {
-
+            console.log('err',err);
+            console.log('fields',fields);
+            console.log('files',files);
+            console.log('uploading image...2');
             if (err) throw err;
-
-            const { contactID } = fields;
-            const fileName      = `${contactID}`;
-            const folderPath    = 'IDs';
-            const content       = await fileToBuffer(files.content._writeStream);
-            const option        = {
-                access: 'PUBLIC_NOT_INDEXABLE',
-                overwrite: true,
-                duplicateValidationStrategy: 'NONE',
-                duplicateValidationScope:'EXACT_FOLDER'
-            };
-
-            const uploadingResult = await hubspot.files.upload({ content,fileName,folderPath,options:option});
+    
+            const { contactID }   = fields;
+            const   fileName      = `${contactID}`;
+            console.log('uploadImage fileName',fileName);
+            const uploadingResult = await writeImage({hubspot,fileName,files:files.content._writeStream});
             const photoID         = uploadingResult.objects[0].id;
-
+            console.log('uploadImage photoID',photoID);
+            req.body = { photoID,contactID };
+            console.log('uploadImage req.body',req.body);
+            res.status(200).send(req.body);
+        }); 
+        } else {
+            const { contactID } = req.body;
+            const   fileName    = `${contactID}`;
+            console.log('uploadImage fileName',fileName);
+            const uploadingResult = await writeImage({hubspot,fileName});
+            const photoID         = uploadingResult.objects[0].id;
+            console.log('uploadImage photoID',photoID);
             req.body.photoID = photoID;
-            req.body.contactID = contactID;
-
+            console.log('uploadImage req.body',req.body);
             next();
-
-        });
+        }  
     }   catch (e) {
         debug (e)
     }
@@ -229,16 +166,9 @@ exports.createNote = async (req,res) => {
     try {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { photoID,contactID } = req.body;
-        const   noteEngagement = {
-            engagement  : { active: true, type: "NOTE" },
-            associations: { contactIds: [contactID] },
-            metadata    : { body: 'Attaching file to Deal.'},
-            attachments : [ { id:photoID } ],
-            json: true
-        };
-        const apiResponse = await hubspot.engagements.create(noteEngagement);
-        console.log(apiResponse);
-        res.status(201).send(apiResponse);
+        const createNoteResponse = await writeNote({hubspot,photoID,contactID})
+        console.log('createNoteResponse',createNoteResponse);
+        res.status(201).send(req.body);
       } catch (e) {
         debug (e)
       }

@@ -28,6 +28,6 @@ module.exports = (app) => {
     app.use('/oauth-callback',getAccesstoken );
     app.get('/login', (req, res) => { emptyTokenStore; res.redirect('/'); });
     app.get('/refresh',refreshAuthpage);
-//     app.get('/error', (req, res) => { res.render('error', { error: req.query.msg }); });
+    app.get('/error', (req, res) => { res.render('error', { error: req.query.msg }); });
 //     app.use((error, req, res) => { res.render('error', { error: error.message }); });
 }

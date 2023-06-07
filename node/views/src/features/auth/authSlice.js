@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk }   from '@reduxjs/toolkit';
-import { signUp, signIn, signOut, isAuth } from '../../util/fetch/Auth';
-import { updateAccount }                   from '../../util/fetch/Users';
+import { signUp, signIn, isAuth } from '../../util/fetch/fetchAuth';
+import { updateAccount }                   from '../../util/fetch/fetchUsers';
 
 const initialState = {
-    authenticated: false, //--
-    credit       : 0,     //-- from DB
-    email        : null,
-    error        : null,  //--
-    password     : null,
-    refferal_code: null,  //-- from DB
-    status       :'idle', //--
+    authenticated: false, 
+    credit       : 0,     //-- from HS
+    contactID    : null,  //-- from HS
+    email        : null,  //-- from HS
+    error        : null,
+    password     : null,  //-- from HS
+    refferal_code: null,  //-- from HS
+    status       :'idle', 
     transactions :[],     //-- from HS
-    userId       : null,  //-- from DB
 };
 
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
-    const/*--------------------*/{ username,email,password,date } = data;
-    const  response = await signUp(username,email,password,date);
+    const/*--------------------*/{ password,email,ref } = data;
+    const  response = await signUp(password,email,ref);
     return response;
 });
 
@@ -27,9 +27,8 @@ export const  sign_in  = createAsyncThunk('auth/sign_in',    async (data) => {
     return response;
 });
 
-export const  sign_out = createAsyncThunk('auth/sign_out',   async (user) => {
-    const  response = await signOut(user);
-    return response;
+export const  sign_out = createAsyncThunk('auth/sign_out',   async () => {
+    return true;
 });
 
 export const  is_Auth  = createAsyncThunk('auth/is_Auth',    async ()     => {
@@ -54,12 +53,13 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_up.fulfilled, (state, action)  => {
-            const {user_id,email,password,credit} = action.payload
+            const {referral_credit,contactID,email,password,refferal_code} = action.payload
             state.authenticated =  true;
-            state.userId        =  user_id;
+            state.credit        =  referral_credit;
+            state.contactID     =  contactID
             state.email         =  email;
             state.password      =  password;
-            state.credit        =  credit;
+            state.refferal_code =  refferal_code;
             state.status        = 'succeeded';
         })
         .addCase(sign_up.rejected,  (state, action)  => {
@@ -71,15 +71,15 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
-            const {user1, deals}  = action.payload;
+            const {account}     = action.payload;
             state.authenticated =  true;
-            state.credit        =  user1.credit;
-            state.email         =  user1.email;
-            state.password      =  user1.password;
-            state.refferal_code =  user1.refferal_code;
+            state.credit        =  account.properties.referral_credit;
+            state.contactID     =  account.id;
+            state.email         =  account.properties.email;
+            state.password      =  account.properties.password;
+            state.refferal_code =  account.properties.refferal_code;
             state.status        = 'succeeded';
-            state.transactions  =  deals;
-            state.userId        =  user1.user_id;  
+            state.transactions  =  account.associations.deals.results; 
         })
         .addCase(sign_in.rejected,  (state, action)  => {
             state.error         =  action.error.message;
@@ -91,13 +91,13 @@ const authSlice = createSlice({
         })
         .addCase(sign_out.fulfilled, (state)         => {
             state.authenticated =  false;
-            state.user_id       =  null;
-            state.user_name     = "Guest";
+            state.credit        =  0;
+            state.contactID     =  null;
             state.email         =  null;
             state.password      =  null;
-            state.date_of_birth =  null;
-            state.credit        =  0;
+            state.refferal_code =  null;
             state.status        = 'succeeded';
+            state.transactions  =  []; 
         })
         .addCase(sign_out.rejected,  (state, action) => {
             state.error         =  action.error.message;

@@ -1,12 +1,15 @@
-const bodyParser  =  require('body-parser');
-
-const router = require('../routes/routesIndex');
+// const bodyParser      =  require('body-parser');
+// const passportModule  = require('./passport');
+const express = require('express');
+const router  = require('../routes/routesIndex');
 
 module.exports = async (app) => {
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true,}));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true,}));
     app.set('trust proxy', 1);
-    router(app);
+
+    // const { App,passport }  = passportModule(app);
+    router( app );
     
     // Error Handler
     app.use((err, req, res, next) => {
