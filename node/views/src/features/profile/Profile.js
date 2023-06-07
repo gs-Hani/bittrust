@@ -43,18 +43,15 @@ export const Profile = () => {
             <div>
                 <div id="profileCard">
                     <div>
-                        <h2>Name</h2>
-                            <h3>{profile.user_name}</h3>
                         <h2>E-mail</h2>
                             <h3>{profile.email}</h3>
-                        <h2>Date of birth</h2>
-                            <h3>{profile.date_of_birth}</h3>
                     </div>
                     <div>
-                        <h2>Refferals</h2>
+                        <h2>Referrals</h2>
+                            <h3>Referral code</h3>
                             <input type="text" value={profile.refferal_code} id="refCode" readOnly></input>
                                 <button onclick={() => copyValue("refCode")}>Copy text</button>
-
+                            <h3>Referral link</h3>
                             <input type="text" value={URL} id="refLink" readOnly></input>
                                 <button onclick={() => copyValue("refLink")}>Copy text</button>
                     </div>
@@ -63,7 +60,9 @@ export const Profile = () => {
                      
                 </div>
                 <form method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
+                    <h2>Upload ID</h2>
                     <input type='file' name='content' id='file'/>
+                    <input type='hidden' name='contactID' id='ID' readOnly value={profile.contactID}/>
                     <input class='input-button' type='submit' value='Upload'/>
                 </form>
             </div>

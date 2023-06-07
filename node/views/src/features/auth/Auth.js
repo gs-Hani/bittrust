@@ -20,8 +20,8 @@ export const Auth = () => {
     if (authenticated) { navigate('/transRecords'); }
   }, [authenticated, navigate]);
 
-  const register = async (email, password, date) => {
-    dispatch(sign_up({ email, password, date }));
+  const register = async (email, password, ref) => {
+    dispatch(sign_up({ email, password, ref }));
   };
 
   const login = (email, password) => {
@@ -107,10 +107,7 @@ export const Auth = () => {
       {showSignUp ? null : (
         <form
           id="sign-up-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            register(email, password, ref);
-          }}
+          onSubmit={(e) => { e.preventDefault(); register(email, password, ref); }}
         >
           <h2>Sign UP</h2>
 

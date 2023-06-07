@@ -17,6 +17,15 @@ const passwordHash = async (password) => {
 
 };
 
+const comparePasswords = /*----------*/async (password,hash) => {
+  try {
+    const  matchFound  = await bcrypt.compare(password,hash);
+    return matchFound;
+  } catch (err) {
+    throw  err;
+  }
+};
+
 function generateRefCode () {
     const length  = 6;
     const charset = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
@@ -29,18 +38,11 @@ function generateRefCode () {
 
 async function hashAndRef (data) {
     try {
-      const /*-----------------------*/{ password } = data;
-      const hash    = await passwordHash(password);
-      const referral_code = generateRefCode();
-      const newData = { ...data ,password:hash,referral_code };
-    //   const contact = await getUserByEmail(email);
-  
-    //   if (contact) {
-    //     const err = new Error('Email already in use');
-    //           err.status = 409;
-    //     throw err;
-    //   }
-    //   const valData = await validateUserData(newData);
+      
+      const /*------------------------------*/{ password } = data;
+      const  hash          = await passwordHash(password);
+      const  referral_code = generateRefCode();
+      const  newData       = { ...data ,password:hash,referral_code };
       return newData;
       
     } catch (err) {
@@ -60,5 +62,6 @@ function isTokenExpired (tokenStore) {
 module.exports = {
     hashAndRef,
     isAuthorized,
-    isTokenExpired
+    isTokenExpired,
+    comparePasswords
 };

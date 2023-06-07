@@ -9,7 +9,7 @@ export const Header = () => {
     const   dispatch        = useDispatch();
     const { authenticated } = useSelector(state => state.auth);
 
-    useEffect (() => { dispatch(is_Auth()); },[dispatch,authenticated]);
+    // useEffect (() => { dispatch(is_Auth()); },[dispatch,authenticated]);
 
     const Profile = () => {
         if (authenticated) {
@@ -17,7 +17,7 @@ export const Header = () => {
                 <header className='header'>
                 <div id='links'>
                   <Link to='/profile'>Profile</Link>
-                  <Link to='/transRecords'>Transaction</Link>
+                  <Link to='/transRecords'>Transactions</Link>
                   <Link onClick={() => dispatch(sign_out())} id="button ">Sign Out</Link>
                 </div>
                 

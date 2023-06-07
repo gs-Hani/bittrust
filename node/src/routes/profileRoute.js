@@ -5,5 +5,5 @@ const { uploadImage, createNote } = require('../controller/hubspotController');
 module.exports = (app) => {
     app.use('/profile', router);
 
-    router.post('/uploadImage',uploadImage,createNote);
+    router.post('/uploadImage',uploadImage);
 };

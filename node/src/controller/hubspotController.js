@@ -60,11 +60,11 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.contact.associations.deals.results;
+        let deals = req.body.account.associations.deals.results;
         for (let i=0; i<deals.length; i++) {
             deals[i] = await getDeal(deals[i].id);
-        }
-        res.status(200).send(deals);
+        };
+        res.status(200).send(req.body);
     }   catch      (e) {
         handleError(e,res);
     }
@@ -124,9 +124,6 @@ const formidable = require('formidable');
 const debug      = require('debug')('file_upload:index');
 const Hubspot    = require('hubspot');
 
-const path     = require('path');
-const image    = path.join(__dirname, '../../resources/Bittrust.jpg');
-
 exports.uploadImage = async (req, res, next) => {
     try {
         console.log('uploadImage req.body',req.body);
@@ -139,15 +136,15 @@ exports.uploadImage = async (req, res, next) => {
             console.log('uploading image...2');
             if (err) throw err;
     
-            const { contactID } = fields;
-            const   fileName    = `${contactID}`;
+            const { contactID }   = fields;
+            const   fileName      = `${contactID}`;
             console.log('uploadImage fileName',fileName);
             const uploadingResult = await writeImage({hubspot,fileName,files:files.content._writeStream});
             const photoID         = uploadingResult.objects[0].id;
             console.log('uploadImage photoID',photoID);
             req.body = { photoID,contactID };
             console.log('uploadImage req.body',req.body);
-            next();
+            res.status(200).send(req.body);
         }); 
         } else {
             const { contactID } = req.body;
@@ -156,7 +153,7 @@ exports.uploadImage = async (req, res, next) => {
             const uploadingResult = await writeImage({hubspot,fileName});
             const photoID         = uploadingResult.objects[0].id;
             console.log('uploadImage photoID',photoID);
-            req.body = { photoID,contactID };
+            req.body.photoID = photoID;
             console.log('uploadImage req.body',req.body);
             next();
         }  
@@ -171,7 +168,7 @@ exports.createNote = async (req,res) => {
         const { photoID,contactID } = req.body;
         const createNoteResponse = await writeNote({hubspot,photoID,contactID})
         console.log('createNoteResponse',createNoteResponse);
-        res.status(201).send(createNoteResponse);
+        res.status(201).send(req.body);
       } catch (e) {
         debug (e)
       }

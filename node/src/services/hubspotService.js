@@ -75,27 +75,50 @@ exports.readContacts = async () => {
 )};
 
 exports.readContact = async(contactId) => {
-  const properties = ["hs_object_id"];
+  const properties = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
   const associations = ["deals"];
   const archived = false;
   const id_property= 'email';
-  return await hubspotClient.crm.contacts.basicApi.getById(
-  contactId,
-  properties,
-  undefined,
-  associations,
-  archived,
-  id_property
-)};
+  try {
+    return await hubspotClient.crm.contacts.basicApi.getById(
+      contactId,
+      properties,
+      undefined,
+      associations,
+      archived,
+      id_property);
+  } catch (error) { return false };
+};
 
 exports.writeContact = async(data) => {
-  const properties = {
-    email        : data.email,
-    password     : data.password,
-    referral_code: data.referral_code,
+  let properties = {
+    email          : data.email,
+    password       : data.password,
+    referral_code  : data.referral_code,
+    commission     : data.commission,
+    referral_credit: data.referral_credit
   };
+  if(data.referred_by) { properties = {...properties, referred_by : data.referred_by}}
   try {
     return await hubspotClient.crm.contacts.basicApi.create({properties,associations:[]});
+  } catch (e) {
+    e.message === 'HTTP request failed'
+    ? console.error(JSON.stringify(e.response, null, 2))
+    : console.error(e)
+  }
+};
+
+exports.updateContact = async(data) => {
+  let properties = {
+    password       : data.password,
+    referral_code  : data.referral_code,
+    commission     : data.commission,
+    referral_credit: data.referral_credit
+  };
+  const contactId = data.contactID;
+  if(data.referred_by) { properties = {...properties, referred_by : data.referred_by}}
+  try {
+    return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
   } catch (e) {
     e.message === 'HTTP request failed'
     ? console.error(JSON.stringify(e.response, null, 2))

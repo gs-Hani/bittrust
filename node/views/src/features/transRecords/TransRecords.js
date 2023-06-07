@@ -5,7 +5,7 @@ import './TransRecords.css';
 
 export const TransRecords = () => {
 
-    const { transactions }  = useSelector(state => state.auth);
+    const { transactions }  = useSelector((state) => state.auth);
     const { authenticated } = useSelector((state) => state.auth);
     const   navigate        = useNavigate();
     useEffect(() => { if (!authenticated) { navigate('/'); } }, [authenticated, navigate]);
@@ -32,12 +32,9 @@ const TableRow = (data) => {
     const { record } = data; 
     return (
         <tr>
-         {/*  <td>{record.date}</td> */}
-         <td>{record.createdAt}</td>
-         <td id='amount'>{record.properties.amount}</td>
-
-           {/* <td>{record.amount}</td> */}
-            <td>{record.id}</td>
+         <td>{record.date}</td>
+         <td id='amount'>{record.amount}</td>
+         <td>{record.id}</td>
         </tr>
     )
 }
