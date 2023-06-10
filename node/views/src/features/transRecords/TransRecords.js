@@ -12,8 +12,7 @@ export const TransRecords = () => {
     //===========================================================================
     return (
         <div className="table-container">
-            <div className="table-wrapper">
-        <table className='table'>
+        <table className='table' id='tablehead'>
             <thead>
                 <tr>
                     <td>Date</td>
@@ -21,6 +20,9 @@ export const TransRecords = () => {
                     <td>Transaction ID</td>
                 </tr>
             </thead>
+        </table>
+          <div className="table-wrapper">
+        <table className='table'>
             <tbody>
                 {transactions.map((record) => (<TableRow key={record.id} record={record}/>)).reverse()}
             </tbody>

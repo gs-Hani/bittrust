@@ -5,73 +5,58 @@ body {
   
   .table-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #000000;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    flex-direction: column;
+    color: rgb(12, 5, 45);
+    margin: 50px auto;
     max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .table-wrapper {
-    background-color: rgb(20, 4, 88);
-    border-radius: 2%;
-    width: 100%;
-    max-height: 400px;
-    overflow: auto;
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-    position: relative;
-  }
-  
-  .table-wrapper::-webkit-scrollbar {
-    width: 6px;
-    background-color: transparent;
-  }
-  
-  .table-wrapper::-webkit-scrollbar-thumb {
-    background-color: rgb(20, 4, 88);
     border-radius: 3%;
+    overflow: hidden;
+    box-shadow: rgb(4, 4, 40);
   }
   
   .table {
     background-color: rgb(255, 255, 255);
     width: 100%;
-    font-size: medium;
-    font-weight: 450;
     border-collapse: collapse;
-    border-radius: 2%;
-    overflow: hidden;
   }
   
-  .table thead,
-  .table td {
-    border-bottom: 1px solid rgba(182, 196, 252, 0.9);
+  thead td {
+    background-color: rgb(57, 54, 148);
+    font-weight: 600;
+    color: aliceblue;
+    padding: 11px;
+    width: 266.725px;
+  }
+  #tablehead {
+    background-color: rgb(10, 3, 39); 
+  }
+  tbody td {
+    border-bottom: 1px solid rgba(206, 214, 244, 0.9);
     padding: 10px;
-    text-align: center;
+    width: 266.725px;
+  }
+  
+  .table-wrapper {
+    background-color: rgb(20, 4, 88);
+    width: 100%;
+    max-height: 400px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  
+  .table-wrapper::-webkit-scrollbar {
+    width: 1px;
+    background-color: transparent;
   }
   
   .table tbody tr:hover {
     background-color: rgb(231, 231, 252);
   }
   
-  .table thead {
-    background-color: rgb(57, 54, 148);
-    font-weight: bold;
-    color: aliceblue;
-  }
-  
-  .sticky-header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  
   @media screen and (max-width: 600px) {
     .table-container {
-      margin: 10px, 10px;
+      margin: 10px;
       width: fit-content;
     }
   
