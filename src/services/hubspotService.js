@@ -75,7 +75,7 @@ exports.readContacts = async () => {
 )};
 
 exports.readContact = async(contactId) => {
-  console.log(contactId);
+  console.log('contactId:',contactId);
   const properties   = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
   const associations = Number.isInteger(Number(contactId)) ? undefined : ["deals"];
   const archived     = false;
@@ -101,6 +101,7 @@ exports.writeContact = async(data) => {
   };
   if(data.referred_by) { properties = {...properties, referred_by : data.referred_by}}
   try {
+    console.log('writing contact...');
     return await hubspotClient.crm.contacts.basicApi.create({properties,associations:[]});
   } catch (e) {
     e.message === 'HTTP request failed'
@@ -115,6 +116,7 @@ exports.updateContact = async(data) => {
   if (referral_code) { properties = { ...properties,referral_code,commission,referral_credit } }
   if (referred_by)   { properties = { ...properties,referred_by                              } }
   try {
+    console.log('updating contact...');
     return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
   } catch (e) {
     e.message === 'HTTP request failed'
@@ -177,7 +179,7 @@ exports.writeNote = async (data) => {
   const   noteEngagement = {
     engagement  : { active: true, type: "NOTE" },
     associations: { contactIds: [contactID] },
-    metadata    : { body: 'Attaching file to Deal.'},
+    metadata    : { body: `${contactID}`},
     attachments : [ { id:photoID } ],
     json: true
   };

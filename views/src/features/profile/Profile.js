@@ -24,8 +24,8 @@ export const Profile = () => {
         !newPassword ? NP = password       : NP = newPassword;
         dispatch(update_data({  contactID  : profile.contactID,
                                 email      : E, 
-                                oldPassword: password, 
-                                password   : NP, 
+                                password   : password, 
+                                newPassword: NP, 
         }));
     };
 
@@ -53,7 +53,6 @@ export const Profile = () => {
                                         autoComplete="off"
                                         onChange    ={(e) => setEmail(e.target.value)} 
                                         />
-                                <h4>Enter current password to confirm</h4>
                                 <div id='passwords'>
                                     <h4>Change password</h4>
                                     <input  type        ="password"
@@ -71,6 +70,7 @@ export const Profile = () => {
                                             onChange    ={(e) => {matchPassword(e.target.value);}}
                                             />
                                 </div>
+                                <h4>Enter current password to confirm</h4>
                                 <input  type        ="password"
                                         id          ="old password"
                                         name        ="password"

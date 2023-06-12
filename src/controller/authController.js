@@ -2,17 +2,22 @@ const { hash,ref,comparePasswords }            = require('../services/authServic
 const { writeContact,updateContact,readContact } = require('../services/hubspotService');                       
 
 exports.signUp = async (req, res, next) => {
-  console.log('signUp req.body',req.body);
   try {
-    const/*-------------------------------*/{ email, password, referred_by, contactID } = req.body;
-    const/*------------------------*/data = { email, password, referred_by, contactID };
-    const hashCode       = await hash(password);
-    const referral_code  = await ref();
-    const newData        = {...data,password:hashCode,referral_code,commission:0.2,referral_credit:0}
-    const response       = contactID ? await updateContact(newData):  await writeContact(newData);
+    console.log('signUp req.body',req.body);
+    const/*--------------*/{ email, password, referred_by, contactID } = req.body;
+    const data           = { email, password, referred_by, contactID };
+    const hashCode       =   await hash(password);
+    const referral_code  =   await ref();
+    const newData        = {...data,password:hashCode,referral_code,commission:0.2,referral_credit:0};
+    let   response;      
+    if   (contactID) {
+      response = await updateContact(newData);
+    } else           {
+      response = await writeContact(newData)
+    };
     console.log('signUp response.id',response.id);
     req.body = {...newData,contactID:response.id};
-    next()
+    next();
   } catch (err) {
     next  (err);
   }
@@ -49,7 +54,7 @@ exports.checkAvailability = async (req, res, next) => {
   try {
     const { email }         = req.body; 
     const   existingContact = await readContact(email);
-    console.log(existingContact);
+    console.log('existingContact:',existingContact);
     if (!existingContact) {
       next();
     } else if(existingContact.properties.email && existingContact.properties.password != '') {
@@ -58,8 +63,8 @@ exports.checkAvailability = async (req, res, next) => {
       throw err;
     } else if (existingContact.properties.email && existingContact.properties.password == '') {
       req.body.contactID = existingContact.id;
+      next();
     }
-    next();
   } catch (err) {
     next  (err);
   }
