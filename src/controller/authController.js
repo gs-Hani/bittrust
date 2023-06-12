@@ -28,18 +28,21 @@ exports.signIn = async (req, res, next) => {
   try {
     const {contactID, email, password} = req.body;
     const account = await readContact(contactID || email);
-    console.log(account);
+    console.log('sign in account:',account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
             err.status = 404;
       throw err
     };
 
-    if (!comparePasswords(password,account.properties.password)) {
+    const match = await comparePasswords(password,account.properties.password)
+
+    if (!match) {
       const err        = new Error('Password is incorrect');
             err.status = 401;
       throw err;
     }
+
     if(account.associations) {
       req.body.deals = account.associations.deals.results;
     }

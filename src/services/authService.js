@@ -18,12 +18,9 @@ const passwordHash = async (password) => {
 };
 
 const comparePasswords = /*----------*/async (password,hash) => {
-  try {
-    const  matchFound  = await bcrypt.compare(password,hash);
-    return matchFound;
-  } catch (err) {
-    throw  err;
-  }
+  const  matchFound    = await bcrypt.compare(password,hash);
+  console.log('comparePasswords results:',matchFound);
+  return matchFound ;
 };
 
 function generateRefCode () {
