@@ -1,22 +1,23 @@
-const { hashAndRef,comparePasswords }            = require('../services/authService');
+const { hash,ref,comparePasswords }            = require('../services/authService');
 const { writeContact,updateContact,readContact } = require('../services/hubspotService');                       
 
 exports.signUp = async (req, res, next) => {
-  console.log('signUp req.body',req.body);
   try {
-    const/*-------------------------------*/{ email, password, referred_by, contactID } = req.body;
-    const/*------------------------*/data = { email, password, referred_by, contactID };
-    let   newData = await hashAndRef(data);
-          newData = {...newData,commission:0.2,referral_credit:0}
-    let   response
-    if(contactID) {
+    console.log('signUp req.body',req.body);
+    const/*--------------*/{ email, password, referred_by, contactID } = req.body;
+    const data           = { email, password, referred_by, contactID };
+    const hashCode       =   await hash(password);
+    const referral_code  =   await ref();
+    const newData        = {...data,password:hashCode,referral_code,commission:0.2,referral_credit:0};
+    let   response;      
+    if   (contactID) {
       response = await updateContact(newData);
-    } else {
-      response = await writeContact(newData);
-    }
+    } else           {
+      response = await writeContact(newData)
+    };
     console.log('signUp response.id',response.id);
     req.body = {...newData,contactID:response.id};
-    next()
+    next();
   } catch (err) {
     next  (err);
   }
@@ -25,22 +26,26 @@ exports.signUp = async (req, res, next) => {
 exports.signIn = async (req, res, next) => {
   console.log('signIn req.body',req.body);
   try {
-    const {email, password} = req.body;
-    const account = await readContact(email);
-    console.log(account);
+    const {contactID, email, password} = req.body;
+    const account = await readContact(contactID || email);
+    console.log('sign in account:',account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
             err.status = 404;
       throw err
     };
 
-    if (!comparePasswords(password,account.properties.password)) {
+    const match = await comparePasswords(password,account.properties.password)
+
+    if (!match) {
       const err        = new Error('Password is incorrect');
             err.status = 401;
       throw err;
     }
 
-    req.body.account = account;
+    if(account.associations) {
+      req.body.deals = account.associations.deals.results;
+    }
     next();
   } catch (err) {
     next  (err)
@@ -52,7 +57,7 @@ exports.checkAvailability = async (req, res, next) => {
   try {
     const { email }         = req.body; 
     const   existingContact = await readContact(email);
-    console.log(existingContact);
+    console.log('existingContact:',existingContact);
     if (!existingContact) {
       next();
     } else if(existingContact.properties.email && existingContact.properties.password != '') {
@@ -61,8 +66,8 @@ exports.checkAvailability = async (req, res, next) => {
       throw err;
     } else if (existingContact.properties.email && existingContact.properties.password == '') {
       req.body.contactID = existingContact.id;
+      next();
     }
-    next();
   } catch (err) {
     next  (err);
   }

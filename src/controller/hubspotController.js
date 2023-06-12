@@ -60,7 +60,7 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.body.account.associations.deals.results;
+        let deals = req.body.deals;
         for (let i=0; i<deals.length; i++) {
             deals[i] = await getDeal(deals[i].id);
         };
@@ -149,12 +149,12 @@ exports.uploadImage = async (req, res, next) => {
         } else {
             const { contactID } = req.body;
             const   fileName    = `${contactID}`;
-            console.log('uploadImage fileName',fileName);
+            console.log('uploadImage fileName:',fileName);
             const uploadingResult = await writeImage({hubspot,fileName});
             const photoID         = uploadingResult.objects[0].id;
-            console.log('uploadImage photoID',photoID);
+            console.log('uploadImage photoID:',photoID);
             req.body.photoID = photoID;
-            console.log('uploadImage req.body',req.body);
+            console.log('uploadImage req.body:',req.body);
             next();
         }  
     }   catch (e) {
@@ -167,7 +167,7 @@ exports.createNote = async (req,res) => {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { photoID,contactID } = req.body;
         const createNoteResponse = await writeNote({hubspot,photoID,contactID})
-        console.log('createNoteResponse',createNoteResponse);
+        console.log('createNoteResponse:',createNoteResponse);
         res.status(201).send(req.body);
       } catch (e) {
         debug (e)

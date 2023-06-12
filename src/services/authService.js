@@ -18,12 +18,9 @@ const passwordHash = async (password) => {
 };
 
 const comparePasswords = /*----------*/async (password,hash) => {
-  try {
-    const  matchFound  = await bcrypt.compare(password,hash);
-    return matchFound;
-  } catch (err) {
-    throw  err;
-  }
+  const  matchFound    = await bcrypt.compare(password,hash);
+  console.log('comparePasswords results:',matchFound);
+  return matchFound ;
 };
 
 function generateRefCode () {
@@ -36,19 +33,25 @@ function generateRefCode () {
     return refCode;
 };
 
-async function hashAndRef (data) {
+async function hash (password) {
     try {
-      
-      const /*------------------------------*/{ password } = data;
-      const  hash          = await passwordHash(password);
-      const  referral_code = generateRefCode();
-      const  newData       = { ...data ,password:hash,referral_code };
-      return newData;
+
+      return await passwordHash(password);
       
     } catch (err) {
       throw  err;
     }
     
+};
+
+async function ref () {
+  try {
+           
+    return generateRefCode();
+
+  } catch (err) {
+    throw (err)
+  }
 };
 
 function isAuthorized (tokenStore) {
@@ -60,7 +63,8 @@ function isTokenExpired (tokenStore) {
 };
 
 module.exports = {
-    hashAndRef,
+    hash,
+    ref,
     isAuthorized,
     isTokenExpired,
     comparePasswords

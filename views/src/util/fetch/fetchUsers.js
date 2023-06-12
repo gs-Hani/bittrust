@@ -1,5 +1,5 @@
 const updateAccount = async (data) => {
-    const res = await fetch(`/users/updateAccount`,{ 
+    const res = await fetch(`/profile/updateProfile`,{ 
         method     : 'PUT',
         credentials: 'include',
         body       :  JSON.stringify({...data}),
