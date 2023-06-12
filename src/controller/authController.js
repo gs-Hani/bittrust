@@ -1,4 +1,4 @@
-const { hashAndRef,comparePasswords }            = require('../services/authService');
+const { hash,ref,comparePasswords }            = require('../services/authService');
 const { writeContact,updateContact,readContact } = require('../services/hubspotService');                       
 
 exports.signUp = async (req, res, next) => {
@@ -6,14 +6,10 @@ exports.signUp = async (req, res, next) => {
   try {
     const/*-------------------------------*/{ email, password, referred_by, contactID } = req.body;
     const/*------------------------*/data = { email, password, referred_by, contactID };
-    let   newData = await hashAndRef(data);
-          newData = {...newData,commission:0.2,referral_credit:0}
-    let   response
-    if(contactID) {
-      response = await updateContact(newData);
-    } else {
-      response = await writeContact(newData);
-    }
+    const hashCode       = await hash(password);
+    const referral_code  = await ref();
+    const newData        = {...data,password:hashCode,referral_code,commission:0.2,referral_credit:0}
+    const response       = contactID ? await updateContact(newData):  await writeContact(newData);
     console.log('signUp response.id',response.id);
     req.body = {...newData,contactID:response.id};
     next()
@@ -25,8 +21,8 @@ exports.signUp = async (req, res, next) => {
 exports.signIn = async (req, res, next) => {
   console.log('signIn req.body',req.body);
   try {
-    const {email, password} = req.body;
-    const account = await readContact(email);
+    const {contactID, email, password} = req.body;
+    const account = await readContact(contactID || email);
     console.log(account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
@@ -39,8 +35,9 @@ exports.signIn = async (req, res, next) => {
             err.status = 401;
       throw err;
     }
-
-    req.body.account = account;
+    if(account.associations) {
+      req.body.deals = account.associations.deals.results;
+    }
     next();
   } catch (err) {
     next  (err)

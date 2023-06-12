@@ -60,7 +60,7 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.body.account.associations.deals.results;
+        let deals = req.body.deals;
         for (let i=0; i<deals.length; i++) {
             deals[i] = await getDeal(deals[i].id);
         };

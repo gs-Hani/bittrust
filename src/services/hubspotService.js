@@ -75,10 +75,11 @@ exports.readContacts = async () => {
 )};
 
 exports.readContact = async(contactId) => {
-  const properties = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
-  const associations = ["deals"];
-  const archived = false;
-  const id_property= 'email';
+  console.log(contactId);
+  const properties   = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
+  const associations = Number.isInteger(Number(contactId)) ? undefined : ["deals"];
+  const archived     = false;
+  const id_property  = Number.isInteger(Number(contactId)) ? undefined : 'email';
   try {
     return await hubspotClient.crm.contacts.basicApi.getById(
       contactId,
@@ -109,14 +110,10 @@ exports.writeContact = async(data) => {
 };
 
 exports.updateContact = async(data) => {
-  let properties = {
-    password       : data.password,
-    referral_code  : data.referral_code,
-    commission     : data.commission,
-    referral_credit: data.referral_credit
-  };
-  const contactId = data.contactID;
-  if(data.referred_by) { properties = {...properties, referred_by : data.referred_by}}
+  const {email, password, contactID:contactId, referral_code, commission, referral_credit, referred_by} = data;
+  let properties   = { email, password };
+  if (referral_code) { properties = { ...properties,referral_code,commission,referral_credit } }
+  if (referred_by)   { properties = { ...properties,referred_by                              } }
   try {
     return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
   } catch (e) {
