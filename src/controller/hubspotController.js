@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const { isAuthorized,isTokenExpired }            = require('../services/authService');
-const { refreshToken,prepareContactsContent,readContacts,readContact,getDeal,getToken,writeImage,writeNote,
+const { refreshToken,getToken,fetchPortalID,prepareContactsContent,readContacts,readContact,getDeal,writeImage,writeNote,
         logResponse,handleError,getAuthURL,setAccessToken }   = require('../services/hubspotService');
 
-const { HUBSPOT } =  require('../model/config');
+const { HUBSPOT }     =  require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
 const   CLIENT_SECRET = HUBSPOT.secret;
 
@@ -24,7 +24,8 @@ exports.checkEnv = (req, res, next) => {
 };
 
 let tokenStore = {};
-let accessToken
+let accessToken;
+let portalId ;
 
 exports.getContacts = async (req, res) => {
     try {
@@ -80,7 +81,7 @@ exports.authorize = async (req, res) => {
     res.redirect(authorizationUrl);
 };
 
-exports.getAccesstoken = async (req, res) => {
+exports.getAccesstoken = async (req, res, next) => {
     const code = _.get(req, 'query.code');
 
     // Create OAuth 2.0 Access Token and Refresh Tokens
@@ -162,14 +163,40 @@ exports.uploadImage = async (req, res, next) => {
     }
 };
 
-exports.createNote = async (req,res) => {
+exports.photoNote = async (req,res,next) => {
     try {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { photoID,contactID } = req.body;
-        const createNoteResponse = await writeNote({hubspot,photoID,contactID})
-        console.log('createNoteResponse:',createNoteResponse);
-        res.status(201).send(req.body);
+        const photoNoteResponse = await writeNote({hubspot,photoID,contactID})
+        console.log('photoNote:',photoNoteResponse.metadata);
+        next();
       } catch (e) {
         debug (e)
       }
-}
+};
+
+exports.referrerNote = async (req,res) => {
+    try {
+        let hubspot = new Hubspot({ accessToken: accessToken });
+        const { portalID,contactID,referred_by } = req.body;
+        console.log('referrerNote req.body:',req.body);
+        const referrerNoteResponse = await writeNote({hubspot,portalID,contactID,referred_by})
+        console.log('referrerNoteResponse:',referrerNoteResponse.metadata);
+        res.status(201).send(req.body);
+    } catch (e) {
+      debug (e)
+    }
+};
+
+exports.getPortalID = async(req,res,next) => {
+    try {
+        console.log('Retrieving access portal id:');
+        let hubspot = new Hubspot({ accessToken: accessToken })
+        const response = await fetchPortalID(hubspot,accessToken);
+        req.body.portalID = response;
+        console.log("portalId:",req.body.portalID);
+        next();
+    } catch (e) {
+      debug (e) 
+    }
+};

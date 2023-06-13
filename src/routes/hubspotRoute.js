@@ -6,6 +6,7 @@ const { checkEnv,
         getContacts,
         authorize,
         getAccesstoken,
+        getPortalID,
         emptyTokenStore,
         refreshAuthpage 
 } = require('../controller/hubspotController');

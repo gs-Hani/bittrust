@@ -4,11 +4,10 @@ const { writeContact,updateContact,readContact } = require('../services/hubspotS
 exports.signUp = async (req, res, next) => {
   try {
     console.log('signUp req.body',req.body);
-    const/*--------------*/{ email, password, referred_by, contactID } = req.body;
-    const data           = { email, password, referred_by, contactID };
+    const/*--------------*/{ email, password, referrer_link, contactID } = req.body;
+    const data           = { email, password, referrer_link, contactID };
     const hashCode       =   await hash(password);
-    const referral_code  =   await ref();
-    const newData        = {...data,password:hashCode,referral_code,commission:0.2,referral_credit:0};
+    const newData        = {...data,password:hashCode,commission:0.2,referral_credit:0};
     let   response;      
     if   (contactID) {
       response = await updateContact(newData);
@@ -16,7 +15,7 @@ exports.signUp = async (req, res, next) => {
       response = await writeContact(newData)
     };
     console.log('signUp response.id',response.id);
-    req.body = {...newData,contactID:response.id};
+    req.body = {...newData,contactID:response.id, referred_by:req.body.referred_by, portalID:req.body.portalID };
     next();
   } catch (err) {
     next  (err);
@@ -27,7 +26,7 @@ exports.signIn = async (req, res, next) => {
   console.log('signIn req.body',req.body);
   try {
     const {contactID, email, password} = req.body;
-    const account = await readContact(contactID || email);
+    const account = await readContact({contactID} || {email});
     console.log('sign in account:',account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
@@ -56,7 +55,7 @@ exports.checkAvailability = async (req, res, next) => {
   console.log('checkAvailability req.body',req.body);
   try {
     const { email }         = req.body; 
-    const   existingContact = await readContact(email);
+    const   existingContact = await readContact({email});
     console.log('existingContact:',existingContact);
     if (!existingContact) {
       next();
