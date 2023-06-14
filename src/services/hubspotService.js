@@ -2,7 +2,7 @@ const _ = require('lodash');
 const hubspot = require('@hubspot/api-client');
 const hubspotClient = new hubspot.Client();
 
-const { HUBSPOT } =  require('../model/config');
+const { HUBSPOT }     =  require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
 const   CLIENT_SECRET = HUBSPOT.secret;
 const   REDIRECT_URI  = HUBSPOT.callbackUrl;
@@ -20,6 +20,11 @@ exports.getToken = async (code) => {
     REDIRECT_URI,
     CLIENT_ID,
     CLIENT_SECRET);
+};
+
+exports.fetchPortalID = async (hubspot,token) => {
+   const  response = await hubspot.oauth.getPortalInfo(token);
+   return response.hub_id;
 };
 
 exports.refreshToken = async (tokenStore,accessToken) => {
@@ -74,12 +79,16 @@ exports.readContacts = async () => {
   properties
 )};
 
-exports.readContact = async(contactId) => {
-  console.log('contactId:',contactId);
+exports.readContact = async({contactID,email,referred_by}) => {
+  console.log('readContact data:',{contactID,email,referred_by});
   const properties   = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
-  const associations = Number.isInteger(Number(contactId)) ? undefined : ["deals"];
+  let   associations =  undefined ;
+  let   id_property  =  undefined ;
+  let   contactId    =  contactID ;
+  if   (email)        { contactId = email      ; associations = ["deals"]; id_property="email" };
+  if   (referred_by)  { contactId = referred_by};
   const archived     = false;
-  const id_property  = Number.isInteger(Number(contactId)) ? undefined : 'email';
+  
   try {
     return await hubspotClient.crm.contacts.basicApi.getById(
       contactId,
@@ -95,13 +104,12 @@ exports.writeContact = async(data) => {
   let properties = {
     email          : data.email,
     password       : data.password,
-    referral_code  : data.referral_code,
     commission     : data.commission,
     referral_credit: data.referral_credit
   };
-  if(data.referred_by) { properties = {...properties, referred_by : data.referred_by}}
+  if(data.referrer_link) { properties = {...properties, referred_by : data.referrer_link}}
   try {
-    console.log('writing contact...');
+    console.log('writing contact...',properties);
     return await hubspotClient.crm.contacts.basicApi.create({properties,associations:[]});
   } catch (e) {
     e.message === 'HTTP request failed'
@@ -111,10 +119,10 @@ exports.writeContact = async(data) => {
 };
 
 exports.updateContact = async(data) => {
-  const {email, password, contactID:contactId, referral_code, commission, referral_credit, referred_by} = data;
+  const {email, password, contactID:contactId, commission, referral_credit, referred_by,referrer_link} = data;
   let properties   = { email, password };
-  if (referral_code) { properties = { ...properties,referral_code,commission,referral_credit } }
-  if (referred_by)   { properties = { ...properties,referred_by                              } }
+  if (referral_code) { properties = { ...properties,commission,referral_credit } }
+  if (referrer_link) { properties = { ...properties,referred_by:referrer_link  } }
   try {
     console.log('updating contact...');
     return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
@@ -175,14 +183,25 @@ exports.writeImage = async (data) => {
 
 //NOTES===========================
 exports.writeNote = async (data) => {
-  const { hubspot,photoID,contactID } = data;
-  const   noteEngagement = {
-    engagement  : { active: true, type: "NOTE" },
-    associations: { contactIds: [contactID] },
-    metadata    : { body: `${contactID}`},
-    attachments : [ { id:photoID } ],
-    json: true
-  };
+  const { hubspot,photoID,contactID,portalID,referred_by } = data;
+  console.log('writeNote data:',photoID,contactID,portalID,referred_by);
+  let noteEngagement = {};
+  if(referred_by) {
+    noteEngagement = {
+      engagement  : { active: true, type: "NOTE" },
+      associations: { contactIds: [referred_by] },
+      metadata    : { body: `https://app.hubspot.com/contacts/${portalID}/contact/${contactID}`},
+      json: true
+    };
+  } else {
+    noteEngagement = {
+      engagement  : { active: true, type: "NOTE" },
+      associations: { contactIds: [contactID] },
+      metadata    : { body: `${contactID}`},
+      attachments : [ { id:photoID } ],
+      json: true
+    };
+  }
   return await hubspot.engagements.create(noteEngagement);
 };
 
