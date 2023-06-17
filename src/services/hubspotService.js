@@ -81,7 +81,7 @@ exports.readContacts = async () => {
 
 exports.readContact = async({contactID,email,referred_by}) => {
   console.log('readContact data:',{contactID,email,referred_by});
-  const properties   = ["hs_object_id","email","password","commission","referral_credit","referral_code",];
+  const properties   = ["hs_object_id","email","password","commission","referral_credit","referred_by",];
   let   associations =  undefined ;
   let   id_property  =  undefined ;
   let   contactId    =  contactID ;
@@ -119,10 +119,13 @@ exports.writeContact = async(data) => {
 };
 
 exports.updateContact = async(data) => {
-  const {email, password, contactID:contactId, commission, referral_credit, referred_by,referrer_link} = data;
+  console.log('updateContact data:',data);
+  const { email, password, contactID:contactId, commission, referral_credit,referrer_link } = data;
   let properties   = { email, password };
-  if (referral_code) { properties = { ...properties,commission,referral_credit } }
-  if (referrer_link) { properties = { ...properties,referred_by:referrer_link  } }
+  console.log('updateContact properties:',properties);
+  if (commission)            { properties = { ...properties,commission,referral_credit } };
+  if (referrer_link)         { properties = { ...properties,referred_by:referrer_link  } };
+  if (referral_credit && 0 < Number(referral_credit)) { properties = { referral_credit } };
   try {
     console.log('updating contact...');
     return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
@@ -136,29 +139,69 @@ exports.updateContact = async(data) => {
 //DEALS================================
 exports.getDeal = async (id) => {
   try {
-      const dealId = id;
-      const properties = [ "closedate", "amount" ];
-      const propertiesWithHistory = undefined;
-      const associations = undefined;
-      const archived = false;
-      const idProperty = undefined;
-      // console.log('Calling crm.deals.basicApi.getById. Retrieve deal.');
-      const dealsResponse = await hubspotClient.crm.deals.basicApi.getById(
-          dealId,
-          properties,
-          propertiesWithHistory,
-          associations,
-          archived,
-          idProperty
+    console.log("getdeal id:",typeof id, id);
+      const dealId                =    id;
+      const properties            = [ "closedate", "amount", "buy9__profit", "sell9__profit" ];
+      const propertiesWithHistory =    undefined;
+      const associations          = [ "contacts" ];
+      const archived              =    false;
+      const idProperty            =    undefined;
+      const dealsResponse         =    await hubspotClient.crm.deals.basicApi.getById(
+          dealId, properties, propertiesWithHistory, associations, archived, idProperty
       );
-      // logResponse('Request contact', req.contact);
-      // logResponse('Response from API', dealsResponse);
-      return {id    :dealsResponse.id,
-              amount:dealsResponse.properties.amount,
-              date  :dealsResponse.properties.closedate.split('T')[0]};
+      console.log(dealsResponse);
+      return {id       :dealsResponse.id,
+              amount   :dealsResponse.properties.amount,
+              date     :dealsResponse.properties.closedate.split('T')[0],
+              profit   :dealsResponse.properties.buy9__profit || dealsResponse.properties.sell9__profit,
+              contactID:dealsResponse.associations.contacts.results[0].id
+            };
+              
+  } catch      (e) {
+    e.message === 'HTTP request failed'
+    ? console.error(JSON.stringify(e.response, null, 2))
+    : console.error(e)
+  }
+};
 
-  }   catch      (e) {
-      handleError(e,res);
+exports.readDeals = async (array) => {
+  try {
+    const BatchReadInputSimplePublicObjectId = {  properties: ["buy9__profit","sell9__profit"],
+                                                  inputs: [...array] };
+    const archived = false;
+    const apiResponse = await hubspotClient.crm.deals.batchApi.read(BatchReadInputSimplePublicObjectId, archived);
+    console.log(JSON.stringify(apiResponse, null, 2));
+    return apiResponse;
+  } catch      (e) {
+    e.message === 'HTTP request failed'
+    ? console.error(JSON.stringify(e.response, null, 2))
+    : console.error(e)
+  }
+};
+
+exports.searchDeals = async () => {
+  try {
+    const filter1 = { propertyName: 'closedate', operator: 'GTE', value: `${Date.now() - 24*60*60*1000}` };
+    // const filter2 = { propertyName: 'associations.contact', operator: 'HAS_PROPERTY' }
+    const filterGroups = { filters: [filter1] };
+    const sort = JSON.stringify({ propertyName: 'closedate', direction: 'DESCENDING' });
+    // const query = 'test';
+    const properties = [];
+    const limit = 100;
+    const after = 0;
+    const publicObjectSearchRequest = {
+      filterGroups: [filterGroups],
+      sorts: [sort],
+      // query,
+      properties,
+      limit,
+      after,
+    }
+    const result = await hubspotClient.crm.deals.searchApi.doSearch(publicObjectSearchRequest);
+    console.log(result);
+    return result;
+  } catch      (e) {
+    handleError(e,res);
   }
 };
 

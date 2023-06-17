@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const { isAuthorized,isTokenExpired }            = require('../services/authService');
-const { refreshToken,getToken,fetchPortalID,prepareContactsContent,readContacts,readContact,getDeal,writeImage,writeNote,
+const { refreshToken,getToken,fetchPortalID,
+        prepareContactsContent,readContacts,readContact,updateContact
+        ,getDeal,writeImage,writeNote,searchDeals,
         logResponse,handleError,getAuthURL,setAccessToken }   = require('../services/hubspotService');
 
 const { HUBSPOT }     =  require('../model/config');
@@ -69,7 +71,42 @@ exports.getDeals = async (req,res) => {
     }   catch      (e) {
         handleError(e,res);
     }
-}
+};
+
+setInterval(autoUpdateCredit,24*60*60*1000);
+
+async function autoUpdateCredit () {
+    try {
+        console.log('Retrieving latest deals...');
+        const response = await searchDeals();
+        let   deals = response.results.map(deal => { return { id:deal.id } });
+        if(deals.total > 0) {
+            for (let i=0; i<deals.length; i++) {
+                console.log('getting deal:',deals[i].id);
+                deals[i] = await getDeal(deals[i].id);
+                console.log('getting contact:',deals[i].id);
+                const contact = await readContact({contactID:deals[i].contactID});
+                deals[i].referred_by = contact.properties.referred_by.split('/').pop();
+                if (deals[i].referred_by) {
+                    const contact = await readContact({contactID:deals[i].referred_by});
+                    deals[i].referrer_commission = contact.properties.commission;
+                    deals[i].referral_credit     = contact.properties.referral_credit;
+                    const rcdt = Number(deals[i].referral_credit);
+                    const rcom = Number(deals[i].referrer_commission);
+                    const prft = Number(deals[i].profit);
+                    deals[i].referral_credit     = rcdt + prft * rcom;
+                    deals[i].update              = await updateContact({
+                        referral_credit:JSON.stringify(deals[i].referral_credit),
+                        contactID:                     deals[i].referred_by
+                    })
+                }
+            };
+        }
+        return deals;
+    } catch (e) {
+      debug (e)  
+    }
+};
 
 exports.authorize = async (req, res) => {
     // Use the client to get authorization Url
@@ -190,7 +227,7 @@ exports.referrerNote = async (req,res) => {
 
 exports.getPortalID = async(req,res,next) => {
     try {
-        console.log('Retrieving access portal id:');
+        console.log('Retrieving access portal id...');
         let hubspot = new Hubspot({ accessToken: accessToken })
         const response = await fetchPortalID(hubspot,accessToken);
         req.body.portalID = response;
