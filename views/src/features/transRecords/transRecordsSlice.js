@@ -1,7 +1,6 @@
-import { useSelector }                   from 'react-redux';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { fetchRecordsIDs,fetchRecordDetails} from '../../util/fetch/fetchRecords';
+import { fetchRecordDetails} from '../../util/fetch/fetchRecords';
 
 const initialState = {
     records      :[],

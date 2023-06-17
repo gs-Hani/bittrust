@@ -26,7 +26,7 @@ exports.signIn = async (req, res, next) => {
   console.log('signIn req.body',req.body);
   try {
     const {contactID, email, password} = req.body;
-    const account = await readContact({contactID} || {email});
+    const account = await readContact({contactID, email});
     console.log('sign in account:',account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
