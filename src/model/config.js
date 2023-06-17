@@ -7,6 +7,8 @@ module.exports = {
     
     NODE_ENV: process.env.NODE_ENV,
 
+    PASSWORD: process.env.PASSWORD,
+
     HUBSPOT: {
         appId      : process.env.HUBSPOT_CLIENT_ID,
         secret     : process.env.HUBSPOT_CLIENT_SECRET,
