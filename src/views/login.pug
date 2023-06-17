@@ -3,4 +3,6 @@ block content
   .container
     .authorize-button
       h3 In order to continue please authorize via OAuth
-      a(class='button' href='/oauth') Authorize
+      form(action="/activation/oauth" method="post") 
+        input(type="password" name="password")
+        input(class='button' type="submit" value='Authorize') 
