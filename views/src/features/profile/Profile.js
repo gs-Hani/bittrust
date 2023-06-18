@@ -1,7 +1,6 @@
 import   React, { useEffect,useState }      from 'react';
 import          { useSelector,useDispatch } from 'react-redux';
 import          { useNavigate }             from 'react-router-dom';
-
 import          { update_data }             from '../auth/authSlice';
 import          { matchPassword }           from '../../util/usefulFunctions';
 
@@ -32,18 +31,18 @@ export const Profile = () => {
         }));
     };
     const copyValue = (id) => {
-      const copyText = document.getElementById(id);
-      copyText.select();
-      copyText.setSelectionRange(0, 99999); // For mobile devices
-      navigator.clipboard.writeText(copyText.value);
-      setAlertText(`Copied the text: ${copyText.value}`);
-      setShowAlert(true);
+        const copyText = document.getElementById(id);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+        navigator.clipboard.writeText(copyText.value);
+        setAlertText(`Copied the text: ${copyText.value}`);
+        setShowAlert(true);
     
-      // Hide the alert after 3 seconds
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    };
+        // Hide the alert after 3 seconds
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 3000);
+      };
     const toggle = () => {
       setCredential(!credential);
       };
@@ -54,77 +53,93 @@ export const Profile = () => {
     else if (profile.status === 'succeeded') {
         return (
             <div>
-                <div id="profileCard">
-                    <div>
-                        <h2>E-mail</h2>
-                            <h3>{profile.email}</h3>
+                <div id="profileCard" 
+                     className="container" >
+                       
                             <form   id="updateProfile"
                                     onSubmit ={(e) => { e.preventDefault(); 
                                               updateAccount(email,password,newPassword);
                                               document.getElementById("updateProfile").reset(); }}
                             >
-                                <h4>Change email</h4>
-                                <input  type        ="email"
-                                        id          ="email"
-                                        name        ="email"
-                                        placeholder ="someEmail@emailprovider.com"
-                                        // size        ="25"
-                                        autoComplete="off"
-                                        onChange    ={(e) => setEmail(e.target.value)} 
-                                        />
-                                <div id='passwords'>
-                                    <h4>Change password</h4>
-                                    <input  type        ="password"
-                                            id          ="password"
-                                            name        ="new password"
-                                            placeholder ="new password"
-                                            autoComplete="off"
-                                            onChange    ={(e) => {matchPassword(e.target.value);setNewPassword(e.target.value);}}
-                                            />
-                                    <input  type        ="password"
-                                            id          ="confirm-password"
-                                            //   name        ="confirm new password" --------------------> this input won't be submitted
-                                            placeholder ="confirm new password"
-                                            autoComplete="off"
-                                            onChange    ={(e) => {matchPassword(e.target.value);}}
-                                            />
-                                </div>
-                                <h4>Enter current password to confirm</h4>
-                                <input  type        ="password"
-                                        id          ="old password"
-                                        name        ="password"
-                                        placeholder ="Current password"
-                                        minLength   ="8" 
-                                        maxLength   ="32"
-                                        autoComplete="off"
-                                        onChange    ={(e) => {setPassword(e.target.value);}}
-                                        required 
-                                        />
-                                <input  type     ="submit"
-                                        id       ="submit"
-                                        value    ="Submit"
-                                        />
-                            </form>
-                    </div>
-                    <div>
-                        <h2>Referrals</h2>
-                            <h3>Referral code</h3>
-                            <input type="text" value={profile.contactID} id="refCode" readOnly></input>
-                                <button onClick={() => copyValue("refCode")}>Copy text</button>
-                            <h3>Referral link</h3>
-                            <input type="text" value={URL} id="refLink" readOnly></input>
-                                <button onClick={() => copyValue("refLink")}>Copy text</button>
-                    </div>
+                                 <div className='gridbox'>
+                        <h2>E-mail:</h2>
+                            <h3>{profile.email}</h3>
+                            </div>
+      <button onClick={toggle}>Change credentials</button>
+  {credential && (
+    <div className="toggled">
+  <h5>Change Email</h5>
 
-                </div>
-
-             {/*Upload ID --------------------- section  */}
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="someEmail@emailprovider.com"
+        autoComplete="off"
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        id="old-password"
+        name="password"
+        placeholder="Current password"
+        minLength="8"
+        maxLength="32"
+        autoComplete="off"
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+  <h5>Change password</h5>
+      <input
+        type="password"
+        id="password"
+        name="new password"
+        placeholder="new password"
+        autoComplete="off"
+        onChange={(e) => {
+          matchPassword(e.target.value);
+          setNewPassword(e.target.value);
+        }}
+      />
+      <input
+        type="password"
+        id="confirm-password"
+        placeholder="confirm new password"
+        autoComplete="off"
+        onChange={(e) => matchPassword(e.target.value)}
+      />
+      
+      <input type="submit" id="submit-password" value="Submit" />
+  </div>
+  
+  )}
+       </form>
+         </div>
 
 
+                            <div className="container">
+      <h3>Referral code</h3>
+      <input type="text" value={profile.refferal_code} id="refCode" readOnly />
 
+      <button className="button" onClick={() => copyValue("refCode")}>
+        Copy text
+      </button>
 
+      <h3>Referral link</h3>
+      <input type="text" value={URL} id="refLink" readOnly />
 
+      <button className="button" onClick={() => copyValue("refLink")}>
+        Copy text
+      </button>
 
+      {showAlert && (
+        <div className="alert">
+          <p>{alertText}</p>
+        </div>
+      )}
+    </div>
+
+                           
                 <form  className='container' method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
                     <h3>Upload ID</h3>
                     <input type='file' name='content' id='file' className='button'/>

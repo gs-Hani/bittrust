@@ -72,10 +72,13 @@ input {
   font-weight: 600;
   padding: 6px;
   margin-top: 5px;
+
 }
 
 .alert p {
   margin: 0;
+  color: #0c095e;
+
 }
 input[type="submit"] {
   background-color: #0c095e;
