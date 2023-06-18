@@ -18,7 +18,7 @@ function App() {
         <Header/>
         <main>
           <Routes>
-            <Route       path="/"    element={<Auth/>}        />
+            <Route       path="/:refCode?"    element={<Auth/>}        />
             <Route       path="/profile"      element={<Profile/>}     />
             <Route       path="/transRecords" element={<TransRecords/>}/>
             {/* <Route       path="/:productId" element={<RefCode/>}    />*/}

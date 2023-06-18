@@ -63,10 +63,15 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.body.deals;
-        for (let i=0; i<deals.length; i++) {
-            deals[i] = await getDeal(deals[i].id);
-        };
+        if(req.body.deals) {
+            let deals = req.body.deals;
+            for (let i=0; i<deals.length; i++) {
+                deals[i] = await getDeal(deals[i].id);
+            };
+            req.body.deals = deals;
+        } else {
+            req.body.deals = [];
+        }
         res.status(200).send(req.body);
     }   catch      (e) {
         handleError(e,res);
@@ -226,9 +231,11 @@ exports.referrerNote = async (req,res) => {
     try {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { portalID,contactID,referred_by } = req.body;
-        console.log('referrerNote req.body:',req.body);
-        const referrerNoteResponse = await writeNote({hubspot,portalID,contactID,referred_by})
-        console.log('referrerNoteResponse:',referrerNoteResponse.metadata);
+        if (referred_by) {
+            console.log('referrerNote req.body:',req.body);
+            const referrerNoteResponse = await writeNote({hubspot,portalID,contactID,referred_by})
+            console.log('referrerNoteResponse:',referrerNoteResponse.metadata);
+        }
         res.status(201).send(req.body);
     } catch (e) {
       debug (e)

@@ -87,7 +87,7 @@ export const Auth = () => {
             name="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
-            minLength="8"
+            // minLength="8"
             maxLength="32"
             autoComplete="off"
           />
@@ -128,7 +128,7 @@ export const Auth = () => {
             name="password"
             placeholder="password"
             onChange={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
-            minLength="8"
+            // minLength="8"
             maxLength="32"
             autoComplete="off"
             required
