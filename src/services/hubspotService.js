@@ -141,7 +141,7 @@ exports.getDeal = async (id) => {
   try {
     console.log("getdeal id:",typeof id, id);
       const dealId                =    id;
-      const properties            = [ "closedate", "amount", "buy9__profit", "sell9__profit" ];
+      const properties            = [ "closedate", "amount", "buy9__profit", "sell9__profit", "dealname" ];
       const propertiesWithHistory =    undefined;
       const associations          = [ "contacts" ];
       const archived              =    false;
@@ -154,7 +154,8 @@ exports.getDeal = async (id) => {
               amount   :dealsResponse.properties.amount,
               date     :dealsResponse.properties.closedate.split('T')[0],
               profit   :dealsResponse.properties.buy9__profit || dealsResponse.properties.sell9__profit,
-              contactID:dealsResponse.associations.contacts.results[0].id
+              dealName :dealsResponse.properties.dealname,
+              contactID:dealsResponse.associations.contacts.results[0].id,
             };
               
   } catch      (e) {
@@ -181,7 +182,7 @@ exports.readDeals = async (array) => {
 
 exports.searchDeals = async () => {
   try {
-    const filter1 = { propertyName: 'closedate', operator: 'GTE', value: `${Date.now() - 24*60*60*1000}` };
+    const filter1 = { propertyName: 'closedate', operator: 'BETWEEN', value:`${Date.now() - 24*60*60*1000}` ,highValue: `${Date.now()}` };
     // const filter2 = { propertyName: 'associations.contact', operator: 'HAS_PROPERTY' }
     const filterGroups = { filters: [filter1] };
     const sort = JSON.stringify({ propertyName: 'closedate', direction: 'DESCENDING' });

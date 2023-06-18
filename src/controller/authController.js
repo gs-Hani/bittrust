@@ -41,7 +41,8 @@ exports.signIn = async (req, res, next) => {
             err.status = 401;
       throw err;
     }
-
+    req.body.id              = account.id;
+    req.body.referral_credit = account.properties.referral_credit;
     if(account.associations) {
       req.body.deals = account.associations.deals.results;
     }

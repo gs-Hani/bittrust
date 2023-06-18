@@ -29,7 +29,7 @@ export const Profile = () => {
         }));
     };
 
-    const URL = generateURL(profile.refferal_code);
+    const URL = generateURL(profile.contactID);
 
     if      (profile.status === 'loading')   { return (<p>...Loading</p>) }
     else if (profile.status === 'succeeded') {
@@ -90,11 +90,11 @@ export const Profile = () => {
                     <div>
                         <h2>Referrals</h2>
                             <h3>Referral code</h3>
-                            <input type="text" value={profile.refferal_code} id="refCode" readOnly></input>
-                                <button onclick={() => copyValue("refCode")}>Copy text</button>
+                            <input type="text" value={profile.contactID} id="refCode" readOnly></input>
+                                <button onClick={() => copyValue("refCode")}>Copy text</button>
                             <h3>Referral link</h3>
                             <input type="text" value={URL} id="refLink" readOnly></input>
-                                <button onclick={() => copyValue("refLink")}>Copy text</button>
+                                <button onClick={() => copyValue("refLink")}>Copy text</button>
                     </div>
                 </div>
                 <form method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
@@ -124,8 +124,14 @@ function copyValue(id) {
     alert("Copied the text: " + copyText.value);
 };
 
+const url = new URL(document.location);
+let   domain = url.pathname.split('/');
+console.log(url);
+console.log(domain);
+domain.pop();
+console.log(domain);
 function generateURL(refCode) {
-    const  baseURL = 'http://localhost:3000';
-    const  newUrl  = new URL(`${refCode}`,baseURL);
+    // const  baseURL = `http://${domain[0]}`;
+    const  newUrl  = new URL(`${refCode}`,url.origin);
     return newUrl;
 }

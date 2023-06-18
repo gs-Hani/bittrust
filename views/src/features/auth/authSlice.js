@@ -8,7 +8,6 @@ const initialState = {
     contactID    : null,  //-- from HS
     email        : null,  //-- from HS
     error        : null,
-    refferal_code: null,  //-- from HS
     status       :'idle', 
     transactions :[],     //-- from HS
 };
@@ -16,14 +15,15 @@ const initialState = {
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
     const/*--------------------*/{ password,email,ref } = data;
     const  response = await signUp(password,email,ref);
-    return response;
+    if (response.message) { throw response } else { return response; }
 });
 
 export const  sign_in  = createAsyncThunk('auth/sign_in',    async (data) => {
     console.log('signing in')
     const/*--------------------*/{ email, password } = data;
     const  response = await signIn(email, password);
-    return response;
+    console.log('sign_in response:', response);
+    if (response.message) { throw response } else { return response; }
 });
 
 export const  sign_out = createAsyncThunk('auth/sign_out',   async () => {
@@ -47,12 +47,11 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_up.fulfilled, (state, action)  => {
-            const {referral_credit,contactID,email,refferal_code} = action.payload
+            const {referral_credit,contactID,email} = action.payload
             state.authenticated =  true;
             state.credit        =  referral_credit;
             state.contactID     =  contactID
             state.email         =  email;
-            state.refferal_code =  refferal_code;
             state.status        = 'succeeded';
         })
         .addCase(sign_up.rejected,  (state, action)  => {
@@ -64,16 +63,17 @@ const authSlice = createSlice({
             state.status        = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
-            const {account}     =  action.payload;
+            const account       =  action.payload;
+            console.log(account);
             state.authenticated =  true;
-            state.credit        =  account.properties.referral_credit;
+            state.credit        =  account.referral_credit;
             state.contactID     =  account.id;
-            state.email         =  account.properties.email;
-            state.refferal_code =  account.properties.referral_code;
+            state.email         =  account.email;
             state.status        = 'succeeded';
-            state.transactions  =  account.associations.deals.results; 
+            state.transactions  =  account.deals; 
         })
         .addCase(sign_in.rejected,  (state, action)  => {
+            console.log(action.error);
             state.error         =  action.error.message;
             state.status        = 'failed';
         })
@@ -86,7 +86,6 @@ const authSlice = createSlice({
             state.credit        =  0;
             state.contactID     =  null;
             state.email         =  null;
-            state.refferal_code =  null;
             state.status        = 'succeeded';
             state.transactions  =  []; 
         })
