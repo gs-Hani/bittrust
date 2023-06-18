@@ -14,7 +14,7 @@ module.exports = async (app) => {
     // Error Handler
     app.use((err, req, res, next) => {
         if(err) {
-            throw (err);
+            res.status(err.status).send({"message": `${err.message}`});
         } else {
             console.log("Error handler");
             res.status(200);

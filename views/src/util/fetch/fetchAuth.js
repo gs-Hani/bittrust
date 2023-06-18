@@ -145,7 +145,7 @@ const user1 = {
 //===================================
 
 const signUp  = async(password,email,ref) => {
-    const res = await fetch(`/auth/sign_up`, { 
+    const res = await fetch(`/auth/signUp`, { 
         method     : 'POST',
         credentials: 'include',
         body       :  JSON.stringify({
@@ -162,21 +162,16 @@ const signUp  = async(password,email,ref) => {
 };
 
 const signIn  = async (email,password) => {
-//  console.log('fetching sign in');
-//   const res = await fetch(`/auth/signIn`,{
-//     method     : 'POST', 
-//     credentials: 'include',
-//     body       :  JSON.stringify({
-//                      username: email,
-//                      password: password,    
-//                 }),
-//     headers    : {
-//                   "Content-Type": "application/json"
-//     } 
-//   });
-//   const json = await res.json();
-  console.log(user1)
-  return user1;
+ console.log('fetching sign in');
+  const res = await fetch(`/auth/signIn`,{
+    method     : 'POST', 
+    credentials: 'include',
+    body       :  JSON.stringify({ email,password }),
+    headers    : { "Content-Type": "application/json" } 
+  });
+  const  json = await res.json();
+  console.log('signIn res:',json);
+  return json;
 };
 
 module.exports = { signUp, signIn };
