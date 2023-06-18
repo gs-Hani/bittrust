@@ -15,6 +15,7 @@ export const Auth = () => {
   const  dispatch                   = useDispatch();
   const { authenticated }           = useSelector((state) => state.auth);
   const { error }                   = useSelector((state) => state.auth);
+  const { status }                  = useSelector((state) => state.auth)
   
   useEffect(() => { console.log(authenticated);
     if (authenticated) { navigate('/transRecords'); }
@@ -59,101 +60,117 @@ export const Auth = () => {
     }
   };
 
-  return (
-    <div className="auth">
-      {showSignUp ? (
-        <form
-          id="sign-in-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            login(email, password);
-          }}
-        >
-          <h2>Sign IN</h2>
-          <input
-            type="email"
-            id="Email"
-            name="email"
-            placeholder="example@emailprovider.com"
-            onChange={(e) => setEmail(e.target.value)}
-            size="25"
-            autoComplete="on"
-            // required
-          />
-
-          <input
-            type="password"
-            id="Password"
-            name="password"
-            placeholder="password"
-            onChange={(e) => setPassword(e.target.value)}
-            // minLength="8"
-            maxLength="32"
-            autoComplete="off"
-          />
-
-          <input type="submit" 
-          id="Submit" 
-          value="Log in"
-           />
-
-          <button type="button" id="slide" onClick={toggleSignUp}>
-            no account?
-          </button>
-        </form>
-      ) : null}
-
-      {/*========================================================================================*/}
-      {showSignUp ? null : (
-        <form
-          id="sign-up-form"
-          onSubmit={(e) => { e.preventDefault(); register(email, password, ref); }}
-        >
-          <h2>Sign UP</h2>
-
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="example@emailprovider.com"
-            onChange={(e) => setEmail(e.target.value)}
-            size="25"
-            autoComplete="on"
-            required
-          />
-
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="password"
-            onChange={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
-            // minLength="8"
-            maxLength="32"
-            autoComplete="off"
-            required
-          />
-  
-          <input
-            type="password"
-            id="confirm-password"
-            placeholder="confirm-password"
-            onChange={(e) => matchPassword(e.currentTarget.value)}
-            autoComplete="off"
-            required
-          />
-  
-          {refCodeInput()}
-  
-          <input type="submit" id="submit" value="Register" />
-          <button type="button" id="slide" onClick={toggleSignUp}>
-            Sign In
-          </button>
-        </form>
-        )}
-  
-        {error && <span>{error}</span>}
+  const loading = () => {
+    return (
+      <div class="ring">Loading
+        <span></span>
       </div>
-    );
+    )
+  };
+
+  const auth = () => {
+    return (
+      <div className="auth">
+        {showSignUp ? (
+          <form
+            id="sign-in-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              login(email, password);
+            }}
+          >
+            <h2>Sign IN</h2>
+            <input
+              type="email"
+              id="Email"
+              name="email"
+              placeholder="example@emailprovider.com"
+              onChange={(e) => setEmail(e.target.value)}
+              size="25"
+              autoComplete="on"
+              // required
+            />
+  
+            <input
+              type="password"
+              id="Password"
+              name="password"
+              placeholder="password"
+              onChange={(e) => setPassword(e.target.value)}
+              // minLength="8"
+              maxLength="32"
+              autoComplete="off"
+            />
+  
+            <input type="submit" 
+            id="Submit" 
+            value="Log in"
+             />
+  
+            <button type="button" id="slide" onClick={toggleSignUp}>
+              no account?
+            </button>
+          </form>
+        ) : null}
+  
+        {/*========================================================================================*/}
+        {showSignUp ? null : (
+          <form
+            id="sign-up-form"
+            onSubmit={(e) => { e.preventDefault(); register(email, password, ref); }}
+          >
+            <h2>Sign UP</h2>
+  
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@emailprovider.com"
+              onChange={(e) => setEmail(e.target.value)}
+              size="25"
+              autoComplete="on"
+              required
+            />
+  
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="password"
+              onChange={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
+              // minLength="8"
+              maxLength="32"
+              autoComplete="off"
+              required
+            />
+    
+            <input
+              type="password"
+              id="confirm-password"
+              placeholder="confirm-password"
+              onChange={(e) => matchPassword(e.currentTarget.value)}
+              autoComplete="off"
+              required
+            />
+    
+            {refCodeInput()}
+    
+            <input type="submit" id="submit" value="Register" />
+            <button type="button" id="slide" onClick={toggleSignUp}>
+              Sign In
+            </button>
+          </form>
+          )}
+    
+          {error && <span>{error}</span>}
+        </div>
+      );
+  }
+
+  return (
+    <div>
+      {status === 'loading' ? loading() : auth() }
+    </div>
+    )
   };
   
