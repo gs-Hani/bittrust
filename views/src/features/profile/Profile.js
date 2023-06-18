@@ -11,6 +11,9 @@ export const Profile = () => {
     const [email      , setEmail      ] = useState();   
     const [password   , setPassword   ] = useState();
     const [newPassword, setNewPassword] = useState();
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertText, setAlertText] = useState('');
+    const [credential, setCredential] = useState(false);
     const  navigate                     = useNavigate();
     const  dispatch                     = useDispatch();
     const  profile                      = useSelector(state => state.auth);
@@ -28,6 +31,22 @@ export const Profile = () => {
                                 newPassword: NP, 
         }));
     };
+    const copyValue = (id) => {
+      const copyText = document.getElementById(id);
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // For mobile devices
+      navigator.clipboard.writeText(copyText.value);
+      setAlertText(`Copied the text: ${copyText.value}`);
+      setShowAlert(true);
+    
+      // Hide the alert after 3 seconds
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    };
+    const toggle = () => {
+      setCredential(!credential);
+      };
 
     const URL = generateURL(profile.contactID);
 
@@ -96,10 +115,19 @@ export const Profile = () => {
                             <input type="text" value={URL} id="refLink" readOnly></input>
                                 <button onClick={() => copyValue("refLink")}>Copy text</button>
                     </div>
+
                 </div>
-                <form method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
-                    <h2>Upload ID</h2>
-                    <input type='file' name='content' id='file'/>
+
+             {/*Upload ID --------------------- section  */}
+
+
+
+
+
+
+                <form  className='container' method='post' action='/profile/uploadImage' enctype='multipart/form-data'>
+                    <h3>Upload ID</h3>
+                    <input type='file' name='content' id='file' className='button'/>
                     <input type='hidden' name='contactID' id='ID' readOnly value={profile.contactID}/>
                     <input class='input-button' type='submit' value='Upload'/>
                 </form>
@@ -109,20 +137,6 @@ export const Profile = () => {
     }
 };
 
-function copyValue(id) {
-    // Get the text field
-    var copyText = document.getElementById(id);
-    
-    // Select the text field
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
-    console.log(copyText.value);
-    // Copy the text inside the text field
-    navigator.clipboard.writeText(copyText.value);
-  
-    // Alert the copied text
-    alert("Copied the text: " + copyText.value);
-};
 
 const url = new URL(document.location);
 let   domain = url.pathname.split('/');
