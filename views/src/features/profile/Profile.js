@@ -48,99 +48,73 @@ export const Profile = () => {
       setCredential(!credential);
       };
 
-    const URL = generateURL(profile.refferal_code);
+    const URL = generateURL(profile.contactID);
 
     if      (profile.status === 'loading')   { return (<p>...Loading</p>) }
     else if (profile.status === 'succeeded') {
         return (
             <div>
                 <div id="profileCard">
-    
-  <form
-   className='container'
-    id="updateProfile"
-    onSubmit={(e) => {
-      e.preventDefault();
-      updateAccount(email, password, newPassword);
-      document.getElementById("updateProfile").reset();
-    }}>
-    <div className="gridbox">
-      <h4>E-mail:</h4>
-      <p>{profile.email}</p>
-    </div>
-       <div>
-      <button onClick={toggle}>Change credentials</button>
-  {credential && (
-    <div className="toggled">
-  <h5>Change Email</h5>
-
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="someEmail@emailprovider.com"
-        autoComplete="off"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        id="old-password"
-        name="password"
-        placeholder="Current password"
-        minLength="8"
-        maxLength="32"
-        autoComplete="off"
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-  <h5>Change password</h5>
-      <input
-        type="password"
-        id="password"
-        name="new password"
-        placeholder="new password"
-        autoComplete="off"
-        onChange={(e) => {
-          matchPassword(e.target.value);
-          setNewPassword(e.target.value);
-        }}
-      />
-      <input
-        type="password"
-        id="confirm-password"
-        placeholder="confirm new password"
-        autoComplete="off"
-        onChange={(e) => matchPassword(e.target.value)}
-      />
-      
-      <input type="submit" id="submit-password" value="Submit" />
-  </div>
-  )}
-  </div>
-  </form>
-             {/*Referrals --------------------- section  */}
-
-             <div className="container">
-      <h3>Referral code</h3>
-      <input type="text" value={profile.refferal_code} id="refCode" readOnly />
-
-      <button className="button" onClick={() => copyValue("refCode")}>
-        Copy text
-      </button>
-
-      <h3>Referral link</h3>
-      <input type="text" value={URL} id="refLink" readOnly />
-
-      <button className="button" onClick={() => copyValue("refLink")}>
-        Copy text
-      </button>
-
-      {showAlert && (
-        <div className="alert">
-          <p>{alertText}</p>
-        </div>
-      )}
-    </div>
+                    <div>
+                        <h2>E-mail</h2>
+                            <h3>{profile.email}</h3>
+                            <form   id="updateProfile"
+                                    onSubmit ={(e) => { e.preventDefault(); 
+                                              updateAccount(email,password,newPassword);
+                                              document.getElementById("updateProfile").reset(); }}
+                            >
+                                <h4>Change email</h4>
+                                <input  type        ="email"
+                                        id          ="email"
+                                        name        ="email"
+                                        placeholder ="someEmail@emailprovider.com"
+                                        // size        ="25"
+                                        autoComplete="off"
+                                        onChange    ={(e) => setEmail(e.target.value)} 
+                                        />
+                                <div id='passwords'>
+                                    <h4>Change password</h4>
+                                    <input  type        ="password"
+                                            id          ="password"
+                                            name        ="new password"
+                                            placeholder ="new password"
+                                            autoComplete="off"
+                                            onChange    ={(e) => {matchPassword(e.target.value);setNewPassword(e.target.value);}}
+                                            />
+                                    <input  type        ="password"
+                                            id          ="confirm-password"
+                                            //   name        ="confirm new password" --------------------> this input won't be submitted
+                                            placeholder ="confirm new password"
+                                            autoComplete="off"
+                                            onChange    ={(e) => {matchPassword(e.target.value);}}
+                                            />
+                                </div>
+                                <h4>Enter current password to confirm</h4>
+                                <input  type        ="password"
+                                        id          ="old password"
+                                        name        ="password"
+                                        placeholder ="Current password"
+                                        minLength   ="8" 
+                                        maxLength   ="32"
+                                        autoComplete="off"
+                                        onChange    ={(e) => {setPassword(e.target.value);}}
+                                        required 
+                                        />
+                                <input  type     ="submit"
+                                        id       ="submit"
+                                        value    ="Submit"
+                                        />
+                            </form>
+                    </div>
+                    <div>
+                        <h2>Referrals</h2>
+                            <h3>Referral code</h3>
+                            <input type="text" value={profile.contactID} id="refCode" readOnly></input>
+                                <button onClick={() => copyValue("refCode")}>Copy text</button>
+                            <h3>Referral link</h3>
+                            <input type="text" value={URL} id="refLink" readOnly></input>
+                                <button onClick={() => copyValue("refLink")}>Copy text</button>
+                    </div>
 
                 </div>
 
@@ -164,8 +138,14 @@ export const Profile = () => {
 };
 
 
+const url = new URL(document.location);
+let   domain = url.pathname.split('/');
+console.log(url);
+console.log(domain);
+domain.pop();
+console.log(domain);
 function generateURL(refCode) {
-    const  baseURL = 'http://localhost:3000';
-    const  newUrl  = new URL(`${refCode}`,baseURL);
+    // const  baseURL = `http://${domain[0]}`;
+    const  newUrl  = new URL(`${refCode}`,url.origin);
     return newUrl;
 }
