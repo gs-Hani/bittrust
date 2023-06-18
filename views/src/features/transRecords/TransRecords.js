@@ -5,30 +5,33 @@ import './TransRecords.css';
 
 export const TransRecords = () => {
 
-    const { transactions }  = useSelector((state) => state.auth);
-    const { authenticated } = useSelector((state) => state.auth);
+    const { authenticated,transactions,credit }  = useSelector((state) => state.auth);
     const   navigate        = useNavigate();
     useEffect(() => { if (!authenticated) { navigate('/'); } }, [authenticated, navigate]);
     //===========================================================================
     return (
-        <div className="table-container">
-        <table className='table' id='tablehead'>
-            <thead>
-                <tr>
-                    <td>Date</td>
-                    <td >Amount (CA$)</td>
-                    <td>Transaction ID</td>
-                </tr>
-            </thead>
-        </table>
-          <div className="table-wrapper">
-        <table className='table'>
-            <tbody>
-                {transactions.map((record) => (<TableRow key={record.id} record={record}/>)).reverse()}
-            </tbody>
-        </table>
+        <div>
+            <p>Your current referral credit : {credit} CA$</p>
+            <div className="table-container">
+                <table className='table' id='tablehead'>
+                    <thead>
+                        <tr>
+                            <td>Date</td>
+                            <td >Amount (CA$)</td>
+                            <td>Transaction name</td>
+                        </tr>
+                    </thead>
+                </table>
+                <div className="table-wrapper">
+                    <table className='table'>
+                        <tbody>
+                            {transactions.map((record) => (<TableRow key={record.id} record={record}/>)).reverse()}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        </div>
+        
 
     )
 }
@@ -39,7 +42,7 @@ const TableRow = (data) => {
         <tr>
          <td>{record.date}</td>
          <td>{record.amount}</td>
-         <td>{record.id}</td>
+         <td>{record.dealName}</td>
         </tr>
     )
 }

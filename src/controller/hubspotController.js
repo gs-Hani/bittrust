@@ -5,9 +5,10 @@ const { refreshToken,getToken,fetchPortalID,
         ,getDeal,writeImage,writeNote,searchDeals,
         logResponse,handleError,getAuthURL,setAccessToken }   = require('../services/hubspotService');
 
-const { HUBSPOT }     =  require('../model/config');
+const { HUBSPOT,
+        PASSWORD }    =  require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
-const   CLIENT_SECRET = HUBSPOT.secret;
+const   CLIENT_SECRET = HUBSPOT.secret;  
 
 
 exports.checkEnv = (req, res, next) => {
@@ -27,7 +28,6 @@ exports.checkEnv = (req, res, next) => {
 
 let tokenStore = {};
 let accessToken;
-let portalId ;
 
 exports.getContacts = async (req, res) => {
     try {
@@ -63,10 +63,15 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        let deals = req.body.deals;
-        for (let i=0; i<deals.length; i++) {
-            deals[i] = await getDeal(deals[i].id);
-        };
+        if(req.body.deals) {
+            let deals = req.body.deals;
+            for (let i=0; i<deals.length; i++) {
+                deals[i] = await getDeal(deals[i].id);
+            };
+            req.body.deals = deals;
+        } else {
+            req.body.deals = [];
+        }
         res.status(200).send(req.body);
     }   catch      (e) {
         handleError(e,res);
@@ -109,13 +114,23 @@ async function autoUpdateCredit () {
 };
 
 exports.authorize = async (req, res) => {
-    // Use the client to get authorization Url
-    // https://www.npmjs.com/package/@hubspot/api-client#obtain-your-authorization-url
-    console.log('Creating authorization Url');
-    const authorizationUrl = await getAuthURL();
-    console.log('Authorization Url', authorizationUrl);
-
-    res.redirect(authorizationUrl);
+    try {
+        console.log('authorize password:',req.body);
+        if (req.body.password === PASSWORD) {
+            // Use the client to get authorization Url
+            // https://www.npmjs.com/package/@hubspot/api-client#obtain-your-authorization-url
+            console.log('Creating authorization Url');
+            const authorizationUrl = await getAuthURL();
+            console.log('Authorization Url', authorizationUrl);
+            res.redirect(authorizationUrl);
+        } else {
+            const err        = new Error('Password is incorrect');
+                  err.status = 401;
+            throw err; 
+        }
+    }   catch      (e) {
+        handleError(e, res);
+    }
 };
 
 exports.getAccesstoken = async (req, res, next) => {
@@ -135,7 +150,7 @@ exports.getAccesstoken = async (req, res, next) => {
     // Set token for the
     // https://www.npmjs.com/package/@hubspot/api-client
     setAccessToken(tokenStore.accessToken);
-    res.redirect('/');
+    res.redirect('/activation');
 };
 
 exports.emptyTokenStore = () => {
@@ -146,7 +161,7 @@ exports.emptyTokenStore = () => {
 exports.refreshAuthpage =  async (req, res) => {
     try {
         if (isAuthorized(tokenStore)) await refreshToken(tokenStore,accessToken);
-        res.redirect('/');
+        res.redirect('/activation');
     } catch (e) {
         handleError(e, res);
     }
@@ -216,9 +231,11 @@ exports.referrerNote = async (req,res) => {
     try {
         let hubspot = new Hubspot({ accessToken: accessToken });
         const { portalID,contactID,referred_by } = req.body;
-        console.log('referrerNote req.body:',req.body);
-        const referrerNoteResponse = await writeNote({hubspot,portalID,contactID,referred_by})
-        console.log('referrerNoteResponse:',referrerNoteResponse.metadata);
+        if (referred_by) {
+            console.log('referrerNote req.body:',req.body);
+            const referrerNoteResponse = await writeNote({hubspot,portalID,contactID,referred_by})
+            console.log('referrerNoteResponse:',referrerNoteResponse.metadata);
+        }
         res.status(201).send(req.body);
     } catch (e) {
       debug (e)
