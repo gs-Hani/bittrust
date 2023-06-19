@@ -180,6 +180,7 @@ const Hubspot    = require('hubspot');
 exports.uploadImage = async (req, res, next) => {
     try {
         console.log('uploadImage req.body',req.body);
+        console.log('uploadImage req.data',req.data);
         let hubspot = new Hubspot({ accessToken: accessToken })
         if(!req.body.contactID) {
         new formidable.IncomingForm().parse(req, async (err, fields, files) => {
@@ -197,7 +198,7 @@ exports.uploadImage = async (req, res, next) => {
             console.log('uploadImage photoID',photoID);
             req.body = { photoID,contactID };
             console.log('uploadImage req.body',req.body);
-            res.status(200).send(req.body);
+            res.sendStatus(200);
         }); 
         } else {
             const { contactID } = req.body;

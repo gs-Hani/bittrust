@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk }   from '@reduxjs/toolkit';
-import { signUp, signIn } from '../../util/fetch/fetchAuth';
-import { updateAccount }                   from '../../util/fetch/fetchUsers';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { signUp, signIn }                from '../../util/fetch/fetchAuth';
+import { updateAccount }                 from '../../util/fetch/fetchUsers';
 
 const initialState = {
     authenticated: false, 

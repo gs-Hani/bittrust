@@ -2,8 +2,8 @@ import   React  from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link }                     from 'react-router-dom';
 import './Header.css'
-import { sign_out }         from '../../features/auth/authSlice';
-import Bittrust from '../../util/Bittrust.svg';
+import { sign_out }                 from '../../features/auth/authSlice';
+import   Bittrust                   from '../../util/Bittrust.svg';
 
 export const Header = () => {
     const   dispatch        = useDispatch();
@@ -12,14 +12,13 @@ export const Header = () => {
     const Profile = () => {
         if (authenticated) {
             return (
-                <header className='header'>
-                <div id='links'>
-                  <Link to='/profile'>Profile</Link>
-                  <Link to='/transRecords'>Transactions</Link>
-                  <Link onClick={() => dispatch(sign_out())} id="button ">Sign Out</Link>
-                </div>
-                
-                </header>
+                <nav>
+                    <div id='links'>
+                    <Link to='/transRecords'>Transactions</Link>
+                    <Link to='/profile'>Profile</Link>
+                    <Link onClick={() => dispatch(sign_out())} id="button ">Sign Out</Link>
+                    </div>
+                </nav>
               );
         }
     }

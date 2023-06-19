@@ -18,11 +18,9 @@ function App() {
         <Header/>
         <main>
           <Routes>
-            <Route       path="/:refCode?"    element={<Auth/>}        />
-            <Route       path="/profile"      element={<Profile/>}     />
-            <Route       path="/transRecords" element={<TransRecords/>}/>
-            {/* <Route       path="/:productId" element={<RefCode/>}    />*/}
-            {/* <Route       path="/checkout"   element={<Checkout/>}   />  */}
+            <Route path="/:refCode?"           element={<Auth/>}        />
+            <Route path="/profile"             element={<Profile/>}     />
+            <Route path="/transRecords"        element={<TransRecords/>}/>
           </Routes>
         </main> 
           
