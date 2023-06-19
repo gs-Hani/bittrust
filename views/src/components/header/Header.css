@@ -8,12 +8,12 @@
 
 .header img {
   width: 250px;
-  padding: 15px;
+  padding: 0 15px;
 }
 
 .header #links {
-  padding: 15px;
-  margin-right: 15px;
+  padding: 20px 40px;
+  /* margin: 0 15px; */
   display: grid;
   grid-auto-flow: column;
   gap: 10px;

@@ -11,7 +11,7 @@ export const TransRecords = () => {
     //===========================================================================
     return (
         <div>
-            <p>Your current referral credit : {credit} CA$</p>
+            <h3>Your current referral credit : {credit} CA$</h3>
             <div className="table-container">
                 <table className='table' id='tablehead'>
                     <thead>

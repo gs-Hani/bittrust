@@ -198,7 +198,7 @@ exports.uploadImage = async (req, res, next) => {
             console.log('uploadImage photoID',photoID);
             req.body = { photoID,contactID };
             console.log('uploadImage req.body',req.body);
-            res.sendStatus(200);
+            res.status(200).send(req.body);
         }); 
         } else {
             const { contactID } = req.body;

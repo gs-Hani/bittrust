@@ -20,7 +20,7 @@ export const Profile = () => {
     const  navigate                     = useNavigate();
     const  dispatch                     = useDispatch();
     const  auth                         = useSelector(state => state.auth);
-    // const  profile                      = useSelector(state => state.profile);
+    const  profile                      = useSelector(state => state.profile);
     console.log(auth);
     useEffect(() => { if(!auth.authenticated) {navigate('/');} },  [navigate,auth.authenticated]);
     useEffect(() => console.log(auth.status), [auth.status]);
@@ -146,10 +146,17 @@ export const Profile = () => {
                             </div>
                           )}
           </div>
-          <form  className='container' method='post' action='/profile/uploadImage' encType='multipart/form-data'>
+          <form  className='container'>
             <h3>Upload ID</h3>
-            <input type='file'   name='content'   id='file' className='button' onChange={(e)=>handleFile(e)}/>
+            <input  type='file' 
+                    name='content'
+                    accept=".jpg,.jpeg,.png,.tif,.tiff,.ico,.bmp,.webp" 
+                    id='file' 
+                    className='button' 
+                    onChange={(e)=>handleFile(e)}/>
             <input className='input-button' value='Upload' type="button" onClick={(e) => uploadImage(e)}/>
+            {profile.error && <p>{profile.error}</p>}
+            {profile.status === "succeeded" && <p>{profile.status}</p>}
           </form>
         </div>    
       )
