@@ -80,15 +80,19 @@ input {
   color: #0c095e;
 
 }
-input[type="submit"] {
+input[type="button"], input[type="submit"] {
   background-color: #0c095e;
   color: white;
   border-radius: 4px;
   font-size: 14px;
   
 }
-form input:hover[type="submit"] {
+form input:hover[type="button"],form input:hover[type="submit"]  {
 background-color:#090829;
+}
+
+.changePassword {
+  margin-bottom: 10px;
 }
 
 @media screen and (max-width: 600px) {

@@ -62,7 +62,7 @@ export const Auth = () => {
 
   const loading = () => {
     return (
-      <div class="ring">Loading
+      <div className="ring">Loading
         <span></span>
       </div>
     )
@@ -88,7 +88,7 @@ export const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               size="25"
               autoComplete="on"
-              // required
+              required
             />
   
             <input
@@ -100,6 +100,7 @@ export const Auth = () => {
               // minLength="8"
               maxLength="32"
               autoComplete="off"
+              required
             />
   
             <input type="submit" 
@@ -162,7 +163,7 @@ export const Auth = () => {
           </form>
           )}
     
-          {error && <span>{error}</span>}
+          {error && <p>{error}</p>}
         </div>
       );
   }

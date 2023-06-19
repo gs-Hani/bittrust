@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { fetchRecordDetails} from '../../util/fetch/fetchRecords';
+import { fetchRecordDetails } from '../../util/fetch/fetchRecords';
 
 const initialState = {
     records      :[],

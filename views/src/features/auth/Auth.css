@@ -65,7 +65,7 @@ background-color:#0d0c3a;
   cursor: pointer;
   text-decoration: underline;
 }
-.auth span {
+.auth p {
   color: red;
 }
 .auth #slide {
