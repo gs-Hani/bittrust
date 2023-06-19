@@ -12,6 +12,11 @@ body {
   color: rgb(20,4,88);
   margin-bottom: 20px;
 }
+
+.container p {
+  color: green;
+}
+
 .gridbox {
   display: grid;
   grid-template-columns: 1fr 2fr;
