@@ -7,10 +7,11 @@ export function maxBirthDate () {
 }
 
 // validate password ==========================================================================
-export function matchPassword (password1) {  
-    const password2 = document.getElementById("password").value;
-    const password3 = document.getElementById("confirm-password").value;
-    if   (password1 === password2 && password1 === password3) { 
+export function matchPassword () {  
+    const password1 = document.getElementById("password").value;
+    const password2 = document.getElementById("confirm-password").value ;
+    console.log(password1 === password2);
+    if   (password1 === password2) { 
            document.getElementById("submit").disabled = false;
            document.getElementById("submit").value    = "Submit";
     } else { 

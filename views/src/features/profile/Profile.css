@@ -100,6 +100,26 @@ background-color:#090829;
   margin-bottom: 10px;
 }
 
+#CC {
+  display: none;
+}
+
+#CC:checked + div {
+  display: none;
+}
+
+label {
+  font-weight: bold;
+  background-color: rgb(255, 232, 200);
+  padding: 8px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 150px;
+  margin: auto;
+  border: 1px;
+}
+
 @media screen and (max-width: 600px) {
   .container {
     margin: auto;
