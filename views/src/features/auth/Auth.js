@@ -71,6 +71,7 @@ export const Auth = () => {
   const auth = () => {
     return (
       <div className="auth">
+        <h2>website DEMO: sign in feature only is functional, no credentials required</h2>
         {showSignUp ? (
           <form
             id="sign-in-form"
@@ -88,7 +89,7 @@ export const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               size="25"
               autoComplete="on"
-              required
+              // required
             />
   
             <input
@@ -100,7 +101,7 @@ export const Auth = () => {
               // minLength="8"
               maxLength="32"
               autoComplete="off"
-              required
+              // required
             />
   
             <input type="submit" 
