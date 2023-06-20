@@ -24,4 +24,4 @@ const uploadImage = async (formData) => {
     return json;
 }
 
-module.exports = { updateAccount,uploadImage };
+export { updateAccount,uploadImage };
