@@ -10,12 +10,11 @@ import './Profile.css';
 const  FormData = require('form-data');
 
 export const Profile = () => {
-    const [email      , setEmail      ] = useState();   
-    const [password   , setPassword   ] = useState();
-    const [newPassword, setNewPassword] = useState();
+    // const [email      , setEmail      ] = useState();   
+    // const [password   , setPassword   ] = useState();
+    // const [newPassword, setNewPassword] = useState();
     const [showAlert  , setShowAlert  ] = useState(false);
     const [alertText  , setAlertText  ] = useState('');
-    const [credential , setCredential ] = useState(false);
     const [file       , setFile       ] = useState(null);
     const  navigate                     = useNavigate();
     const  dispatch                     = useDispatch();
@@ -23,11 +22,12 @@ export const Profile = () => {
     const  profile                      = useSelector(state => state.profile);
     console.log(auth);
     useEffect(() => { if(!auth.authenticated) {navigate('/');} },  [navigate,auth.authenticated]);
-    useEffect(() => console.log(auth.status), [auth.status]);
+    useEffect(() => console.log(auth.status1), [auth.status1]);
 
     const updateAccount = async (email,password,newPassword) => {
+      console.log(newPassword,password);
         let E; let NP;
-        !email       ? E  = auth.email  : E  = email;
+        !email       ? E  = auth.email     : E  = email;
         !newPassword ? NP = password       : NP = newPassword;
         dispatch(update_data({  contactID  : auth.contactID,
                                 email      : E, 
@@ -64,74 +64,73 @@ export const Profile = () => {
           setShowAlert(false);
         }, 3000);
       };
-    const toggle = () => {
-      setCredential(!credential);
-      };
 
     const URL = generateURL(auth.contactID);
 
-    if      (auth.status === 'loading')   { return (<p>...Loading</p>) }
-    else if (auth.status === 'succeeded') {
+    if      (auth.status1 === 'loading')   { return (<p>...Loading</p>) }
+    else if (auth.status1 === 'succeeded') {
       return (
         <div>
           <div  id="profileCard" 
                 className="container" >
             <form id="updateProfile"
-                  onSubmit ={(e) => { e.preventDefault();updateAccount(email,password,newPassword); document.getElementById("updateProfile").reset(); }}
+                  onSubmit ={(e) => { e.preventDefault();
+                                      const email       = document.getElementById("email").value;
+                                      const newPassword = document.getElementById("password").value;
+                                      const password    = document.getElementById("old-password").value;
+                                      console.log(newPassword,password);
+                                      updateAccount(email,password,newPassword);
+                                      document.getElementById("updateProfile").reset(); }}
             >
               <div className='gridbox'>
                 <h2>E-mail:</h2>
                 <h3>{auth.email}</h3>
               </div>
-              <button onClick={toggle}>Change credentials</button>
-              {credential && (
+              <label htmlFor="CC"> Change credentials </label>
+              <input type='checkbox' id="CC" defaultChecked />
               <div className="toggled">
                 <h5>Change Email</h5>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="someEmail@emailprovider.com"
+                  type        ="email"
+                  id          ="email"
+                  name        ="email"
+                  placeholder ="someEmail@emailprovider.com"
                   autoComplete="off"
-                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <div className="changePassword">
                   <h5>Change password</h5>
                   <input
-                    type="password"
-                    id="password"
-                    name="new password"
-                    placeholder="new password"
+                    type        ="password"
+                    id          ="password"
+                    name        ="new password"
+                    placeholder ="new password"
                     autoComplete="off"
-                    onChange={(e) => {
-                      matchPassword(e.target.value);
-                      setNewPassword(e.target.value);
-                    }}
+                    onChange={() => {matchPassword();}}
                   />
                   <input
-                  type="password"
-                  id="confirm-password"
-                  placeholder="confirm new password"
+                  type        ="password"
+                  id          ="confirm-password"
+                  placeholder ="confirm new password"
                   autoComplete="off"
-                  onChange={(e) => matchPassword(e.target.value)}
+                  onChange    ={() => matchPassword()}
                   />
                 </div>
                 <h5>Confirm changes</h5>
                 <input
-                  type="password"
-                  id="old-password"
-                  name="password"
-                  placeholder="Current password"
-                  minLength="8"
-                  maxLength="32"
+                  type        ="password"
+                  id          ="old-password"
+                  name        ="password"
+                  placeholder ="Current password"
+                  minLength   ="8"
+                  maxLength   ="32"
                   autoComplete="off"
-                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <input type="submit" id="submit-password" value="Submit" />
+                <input type="submit" id="submit" value="Submit" />
               </div>
-              )}
-              {auth.error && <p>{auth.error}</p>}
+              {auth.error2 && <p>{auth.error2}</p>}
+              {auth.status2 === "loading" && <p>{auth.status2}</p>}
+              {auth.status2 === "succeeded" && <p>{auth.status2}</p>}
             </form>
           </div>
           <div className="container">

@@ -7,8 +7,10 @@ const initialState = {
     credit       : 0,     //-- from HS
     contactID    : null,  //-- from HS
     email        : null,  //-- from HS
-    error        : null,
-    status       :'idle', 
+    error1       : null,
+    error2       : null,
+    status1      :'idle', 
+    status2      :'idle', 
     transactions :[],     //-- from HS
 };
 
@@ -31,6 +33,7 @@ export const  sign_out = createAsyncThunk('auth/sign_out',   async () => {
 });
 
 export const update_data = createAsyncThunk('auth/update_data', async (data) => {
+    console.log(data)
     const  response = await updateAccount(data);
     return response;
 });
@@ -44,7 +47,7 @@ const authSlice = createSlice({
         builder
         //Sign Up===========================================
         .addCase(sign_up.pending,   (state)          => {
-            state.status        = 'loading';
+            state.status1       = 'loading';
         })
         .addCase(sign_up.fulfilled, (state, action)  => {
             const {referral_credit,contactID,email} = action.payload
@@ -52,15 +55,15 @@ const authSlice = createSlice({
             state.credit        =  referral_credit;
             state.contactID     =  contactID
             state.email         =  email;
-            state.status        = 'succeeded';
+            state.status1       = 'succeeded';
         })
         .addCase(sign_up.rejected,  (state, action)  => {
-            state.error         =  action.error.message;
-            state.status        = 'failed';
+            state.error1        =  action.error.message;
+            state.status1       = 'failed';
         })
         //Sign In===========================================
         .addCase(sign_in.pending,   (state)          => {
-            state.status        = 'loading';
+            state.status1       = 'loading';
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
             const account       =  action.payload;
@@ -69,38 +72,45 @@ const authSlice = createSlice({
             state.credit        =  account.referral_credit;
             state.contactID     =  account.id;
             state.email         =  account.email;
-            state.status        = 'succeeded';
+            state.status1       = 'succeeded';
             state.transactions  =  account.deals; 
         })
         .addCase(sign_in.rejected,  (state, action)  => {
             console.log(action.error);
-            state.error         =  action.error.message;
-            state.status        = 'failed';
+            state.error1        =  action.error.message;
+            state.status1       = 'failed';
         })
         //Sign Out==========================================
         .addCase(sign_out.pending,   (state)         => {
-            state.status        = 'loading';
+            state.status1       = 'loading';
         })
         .addCase(sign_out.fulfilled, (state)         => {
             state.authenticated =  false;
             state.credit        =  0;
             state.contactID     =  null;
             state.email         =  null;
-            state.status        = 'succeeded';
+            state.error1        =  null;
+            state.error2        =  null;
+            state.status1       = 'idle';
+            state.status2       = 'idle';
             state.transactions  =  []; 
         })
         .addCase(sign_out.rejected,  (state, action) => {
-            state.error         =  action.error.message;
-            state.status        = 'failed';
+            state.error1        =  action.error.message;
+            state.status1       = 'failed';
         })
         //Update Data========================================
+        .addCase(update_data.pending,   (state)         => {
+            state.status2       = 'loading';
+        })
         .addCase(update_data.fulfilled, (state, action) => {
-            const {email} = action.payload;
+            const {email} = action.payload.properties;
             console.log('update data slice, action.payload:',action.payload);
-            state.email   = email;
+            state.email   =  email;
+            state.status2 = 'succeeded';
         })
         .addCase(update_data.rejected,  (state, action) => {
-            state.error         =  action.error.message;
+            state.error2        =  action.error.message;
         })
     }
 });

@@ -14,8 +14,8 @@ export const Auth = () => {
   const  navigate                   = useNavigate();
   const  dispatch                   = useDispatch();
   const { authenticated }           = useSelector((state) => state.auth);
-  const { error }                   = useSelector((state) => state.auth);
-  const { status }                  = useSelector((state) => state.auth)
+  const { error1 }                  = useSelector((state) => state.auth);
+  const { status1 }                 = useSelector((state) => state.auth)
   
   useEffect(() => { console.log(authenticated);
     if (authenticated) { navigate('/transRecords'); }
@@ -163,14 +163,14 @@ export const Auth = () => {
           </form>
           )}
     
-          {error && <p>{error}</p>}
+          {error1 && <p>{error1}</p>}
         </div>
       );
   }
 
   return (
     <div>
-      {status === 'loading' ? loading() : auth() }
+      {status1 === 'loading' ? loading() : auth() }
     </div>
     )
   };
