@@ -182,4 +182,4 @@ const signIn  = async (email,password) => {
   return json;
 };
 
-module.exports = { signUp, signIn };
+export { signUp, signIn };
