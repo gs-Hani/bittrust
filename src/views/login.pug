@@ -1,8 +1,0 @@
-extends includes/layout
-block content
-  .container
-    .authorize-button
-      h3 In order to continue please authorize via OAuth
-      form(action="/activation/oauth" method="post") 
-        input(type="password" name="password")
-        input(class='button' type="submit" value='Authorize') 
