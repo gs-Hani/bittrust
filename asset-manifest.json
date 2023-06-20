@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/https://gs-hani.github.io/bittrust/static/css/main.0fddd798.css",
-    "main.js": "/https://gs-hani.github.io/bittrust/static/js/main.7b3c8a0b.js",
-    "static/js/787.a6e3841d.chunk.js": "/https://gs-hani.github.io/bittrust/static/js/787.a6e3841d.chunk.js",
-    "static/media/Bittrust.svg": "/https://gs-hani.github.io/bittrust/static/media/Bittrust.ecfb801cf0ffe394a04b523132f4ded4.svg",
-    "index.html": "/https://gs-hani.github.io/bittrust/index.html",
-    "main.0fddd798.css.map": "/https://gs-hani.github.io/bittrust/static/css/main.0fddd798.css.map",
-    "main.7b3c8a0b.js.map": "/https://gs-hani.github.io/bittrust/static/js/main.7b3c8a0b.js.map",
-    "787.a6e3841d.chunk.js.map": "/https://gs-hani.github.io/bittrust/static/js/787.a6e3841d.chunk.js.map"
+    "main.css": "/bittrust/static/css/main.0fddd798.css",
+    "main.js": "/bittrust/static/js/main.bf53907e.js",
+    "static/js/787.a6e3841d.chunk.js": "/bittrust/static/js/787.a6e3841d.chunk.js",
+    "static/media/Bittrust.svg": "/bittrust/static/media/Bittrust.ecfb801cf0ffe394a04b523132f4ded4.svg",
+    "index.html": "/bittrust/index.html",
+    "main.0fddd798.css.map": "/bittrust/static/css/main.0fddd798.css.map",
+    "main.bf53907e.js.map": "/bittrust/static/js/main.bf53907e.js.map",
+    "787.a6e3841d.chunk.js.map": "/bittrust/static/js/787.a6e3841d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0fddd798.css",
-    "static/js/main.7b3c8a0b.js"
+    "static/js/main.bf53907e.js"
   ]
 }
