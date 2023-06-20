@@ -187,4 +187,4 @@ const signIn  = async (email,password) => {
   });
 };
 
-module.exports = { signUp, signIn };
+export { signUp, signIn };

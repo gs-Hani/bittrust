@@ -25,7 +25,5 @@ const fetchRecordDetails = (id) => {
     //return deal.properties;
 }; 
 
-module.exports = { fetchRecordsIDs, fetchRecordDetails }; //================
-
-//TO BE DELETED ===================================
+export { fetchRecordsIDs, fetchRecordDetails }; 
 
