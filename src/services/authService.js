@@ -62,10 +62,37 @@ function isTokenExpired (tokenStore) {
     return Date.now() >= tokenStore.updatedAt + tokenStore.expiresIn * 1000;
 };
 
+async function logIn (data,readContact) {
+  try {
+    const {contactID, email, password} = data;
+    const account = await readContact({contactID, email});
+    console.log('sign in account:',account);
+    if (!account || account.properties.password == null) {
+      const err        = new Error('No account with such email was found!');
+            err.status = 404;
+      throw err
+    };
+
+    const match = await comparePasswords(password,account.properties.password)
+
+    if (!match) {
+      const err        = new Error('Password is incorrect');
+            err.status = 401;
+      throw err;
+    }
+
+    return account
+
+  } catch (error) {
+    throw (error)
+  }
+};
+
 module.exports = {
     hash,
     ref,
     isAuthorized,
     isTokenExpired,
-    comparePasswords
+    comparePasswords,
+    logIn
 };

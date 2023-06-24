@@ -63,16 +63,18 @@ exports.getContact = async(req,res,next) => {
 
 exports.getDeals = async (req,res) => {
     try {
-        if(req.body.deals) {
-            let deals = req.body.deals;
+        console.log('getDeals req.body:',req.body);
+        console.log('getDeals req.user:',req.user);
+        if(req.user.deals) {
+            let deals = req.user.deals;
             for (let i=0; i<deals.length; i++) {
                 deals[i] = await getDeal(deals[i].id);
             };
-            req.body.deals = deals;
+            req.user.deals = deals;
         } else {
-            req.body.deals = [];
+            req.user.deals = [];
         }
-        res.status(200).send(req.body);
+        res.status(200).send(req.user);
     }   catch      (e) {
         handleError(e,res);
     }
