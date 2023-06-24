@@ -1,18 +1,14 @@
-// const bodyParser      =  require('body-parser');
-// const passportModule  = require('./passport');
-const express = require('express');
-const router  = require('../routes/routesIndex');
+const express_sessionModule = require('./express-session');
+const passportModule        = require('./passport');
+const router                = require('../routes/routesIndex');
 
 module.exports = async (app) => {
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true,}));
-    app.set('trust proxy', 1);
-
-    // const { App,passport }  = passportModule(app);
-    router( app );
+    const   express_session = await express_sessionModule(app);
+    const { App,passport }  = passportModule(express_session);
+    router( App,passport );
     
     // Error Handler
-    app.use((err, req, res, next) => {
+    App.use((err, req, res, next) => {
         if(err) {
             res.status(err.status).send({"message": `${err.message}`});
         } else {

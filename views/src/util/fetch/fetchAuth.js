@@ -153,28 +153,28 @@ const user1 = {
 //===================================
 
 const signUp  = async(password,email,ref) => {
-    const res = await fetch(`/auth/signUp`, { 
-        method     : 'POST',
-        credentials: 'include',
-        body       :  JSON.stringify({
-                      email:       email,
-                      password:    password,
-                      referred_by: ref
-        }),
-        headers    : {
-            "Content-Type": "application/json"
-        } 
-    });
-    const  json = await res.json();
-    return json;
+  const   res = await fetch(`/auth/signUp`, { 
+      method     : 'POST',
+      credentials: 'include',
+      body       :  JSON.stringify({
+                    email:       email,
+                    password:    password,
+                    referred_by: ref
+      }),
+      headers    : {
+        "Content-Type": "application/json"
+      } 
+  });
+  const  json = await res.json();
+  return json;
 };
 
 const signIn  = async (email,password) => {
- console.log('fetching sign in');
+  console.log('fetching sign in');
   const res = await fetch(`/auth/signIn`,{
     method     : 'POST', 
     credentials: 'include',
-    body       :  JSON.stringify({ email,password }),
+    body       :  JSON.stringify({ username:email,password }),
     headers    : { "Content-Type": "application/json" } 
   });
   const  json = await res.json();
@@ -182,4 +182,26 @@ const signIn  = async (email,password) => {
   return json;
 };
 
-export { signUp, signIn };
+const signOut = async () => {
+  const res = await fetch(`/auth/signOut`,{ 
+      method     :'POST',
+      credentials: 'include',
+      headers    : {
+          "Content-Type": "application/json"
+          } });
+  const  json = await res.json();
+  return json;
+};
+
+const isAuth  = async () => {
+  const   res = await fetch(`/auth/checkauth`,{ 
+      method     :'GET',
+      credentials: 'include',
+      headers    : {
+          "Content-Type": "application/json"
+          } });
+  const  json = await res.json();
+  return json;
+};
+
+export { signUp, signIn, signOut, isAuth };

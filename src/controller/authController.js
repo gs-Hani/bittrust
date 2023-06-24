@@ -1,4 +1,4 @@
-const { hash,ref,comparePasswords }            = require('../services/authService');
+const { hash,logIn }            = require('../services/authService');
 const { writeContact,updateContact,readContact } = require('../services/hubspotService');                       
 
 exports.signUp = async (req, res, next) => {
@@ -25,22 +25,8 @@ exports.signUp = async (req, res, next) => {
 exports.signIn = async (req, res, next) => {
   console.log('signIn req.body',req.body);
   try {
-    const {contactID, email, password} = req.body;
-    const account = await readContact({contactID, email});
-    console.log('sign in account:',account);
-    if (!account || account.properties.password == null) {
-      const err        = new Error('No account with such email was found!');
-            err.status = 404;
-      throw err
-    };
-
-    const match = await comparePasswords(password,account.properties.password)
-
-    if (!match) {
-      const err        = new Error('Password is incorrect');
-            err.status = 401;
-      throw err;
-    }
+    const data = req.body
+    const account            = await logIn(data,readContact);
     req.body.id              = account.id;
     req.body.referral_credit = account.properties.referral_credit;
     if(account.associations) {
@@ -72,3 +58,50 @@ exports.checkAvailability = async (req, res, next) => {
     next  (err);
   }
 };
+
+exports.signOut = async (req, res, next) => {
+  try {
+    
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      console.log('signOut req.session',req.session);
+      res.status(200).send(req.session);
+    });
+
+  } catch (err) {  
+    next  (err);
+  }    
+};
+
+exports.isAuthenticated = async (req,res,next) => {
+
+  try {
+    console.log('isAuthenticated req.session.passport:',req.session.passport);
+    console.log('isAuthenticated req.user:',req.user);
+    if (req.session.passport) {
+      next()
+    } else {
+      res.sendStatus(401)
+    }
+    
+  } catch (err) {
+    next  (err);
+  }
+  
+};
+
+exports.refreshAccount = async (req,res,next) => {
+  try {
+    console.log('refreshAccount req.session.passport.user:',req.session.passport.user);
+    const account = await readContact(req.session.passport.user);
+    req.user = {
+      contactID: account.id, 
+      email    : account.properties.email,
+      deals    : account.associations.deals.results,
+      credit   : account.properties.referral_credit
+    };
+    next();
+  } catch (err) {
+    next  (err)
+  }
+}

@@ -5,6 +5,7 @@ import { useNavigate }                from 'react-router-dom';
 import './Auth.css';
 import { sign_up, sign_in }           from './authSlice';
 import { matchPassword }              from '../../util/usefulFunctions';
+import { Loading }                    from '../../components/loading/Loading';
 
 export const Auth = () => {
   const [email, setEmail]           = useState();
@@ -17,8 +18,9 @@ export const Auth = () => {
   const { error1 }                  = useSelector((state) => state.auth);
   const { status1 }                 = useSelector((state) => state.auth)
   
-  useEffect(() => { console.log(authenticated);
-    if (authenticated) { navigate('/transRecords'); }
+  useEffect(() => {
+    console.log('auth page useEffect:',authenticated);
+    if (authenticated) { navigate('/transRecords'); } 
   }, [authenticated, navigate]);
 
   const register = async (email, password, ref) => {
@@ -60,13 +62,13 @@ export const Auth = () => {
     }
   };
 
-  const loading = () => {
-    return (
-      <div className="ring">Loading
-        <span></span>
-      </div>
-    )
-  };
+  // const loading = () => {
+  //   return (
+  //     <div className="ring">Loading
+  //       <span></span>
+  //     </div>
+  //   )
+  // };
 
   const auth = () => {
     return (
@@ -170,8 +172,8 @@ export const Auth = () => {
 
   return (
     <div>
-      {status1 === 'loading' ? loading() : auth() }
+      {status1 === 'loading' ? Loading() : auth() }
     </div>
-    )
-  };
+  )
+};
   

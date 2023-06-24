@@ -4,8 +4,11 @@ import        { useNavigate }             from 'react-router-dom';
 import        { update_data }             from '../auth/authSlice';
 import        { upload_Image }            from './profileSlice'
 import        { matchPassword }           from '../../util/usefulFunctions';
+import        { is_Auth }                 from '../../features/auth/authSlice';
 
 import './Profile.css';
+
+import { Loading }            from '../../components/loading/Loading';
 
 const  FormData = require('form-data');
 
@@ -16,13 +19,16 @@ export const Profile = () => {
     const [showAlert  , setShowAlert  ] = useState(false);
     const [alertText  , setAlertText  ] = useState('');
     const [file       , setFile       ] = useState(null);
-    const  navigate                     = useNavigate();
     const  dispatch                     = useDispatch();
+    const  navigate                     = useNavigate();
     const  auth                         = useSelector(state => state.auth);
     const  profile                      = useSelector(state => state.profile);
-    console.log(auth);
-    useEffect(() => { if(!auth.authenticated) {navigate('/');} },  [navigate,auth.authenticated]);
-    useEffect(() => console.log(auth.status1), [auth.status1]);
+
+    // useEffect(() => console.log(auth), [auth.status1]);
+    // useEffect (() => {
+    //   console.log('profile useEffect',auth.status1,auth.authenticated)
+    //     if(auth.status1 !== 'loading' && !auth.authenticated) { {navigate('/');} }
+    // },[auth.status1,auth.authenticated,navigate]);
 
     const updateAccount = async (email,password,newPassword) => {
       console.log(newPassword,password);
@@ -67,12 +73,11 @@ export const Profile = () => {
 
     const URL = generateURL(auth.contactID);
 
-    if      (auth.status1 === 'loading')   { return (<p>...Loading</p>) }
+    if      (auth.status1 === 'loading')   { return (Loading()) }
     else if (auth.status1 === 'succeeded') {
       return (
         <div>
-          <div  id="profileCard" 
-                className="container" >
+          <div  id="profileCard" className="container" >
             <form id="updateProfile"
                   onSubmit ={(e) => { e.preventDefault();
                                       const email       = document.getElementById("email").value;
@@ -97,24 +102,22 @@ export const Profile = () => {
                   placeholder ="someEmail@emailprovider.com"
                   autoComplete="off"
                 />
-                <div className="changePassword">
-                  <h5>Change password</h5>
-                  <input
-                    type        ="password"
-                    id          ="password"
-                    name        ="new password"
-                    placeholder ="new password"
-                    autoComplete="off"
-                    onChange={() => {matchPassword();}}
-                  />
-                  <input
+                <h5>Change password</h5>
+                <input
                   type        ="password"
-                  id          ="confirm-password"
-                  placeholder ="confirm new password"
+                  id          ="password"
+                  name        ="new password"
+                  placeholder ="new password"
                   autoComplete="off"
-                  onChange    ={() => matchPassword()}
-                  />
-                </div>
+                  onChange={() => {matchPassword();}}
+                />
+                <input
+                type        ="password"
+                id          ="confirm-password"
+                placeholder ="confirm new password"
+                autoComplete="off"
+                onChange    ={() => matchPassword()}
+                />
                 <h5>Confirm changes</h5>
                 <input
                   type        ="password"

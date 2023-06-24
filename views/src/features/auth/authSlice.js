@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { signUp, signIn }                from '../../util/fetch/fetchAuth';
+import { signUp,signIn,signOut,isAuth }  from '../../util/fetch/fetchAuth';
 import { updateAccount }                 from '../../util/fetch/fetchUsers';
 
 const initialState = {
@@ -20,7 +20,7 @@ export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
     if (response.message) { throw response } else { return response; }
 });
 
-export const  sign_in  = createAsyncThunk('auth/sign_in',    async (data) => {
+export const  sign_in  = createAsyncThunk('auth/sign_in',       async (data) => {
     console.log('signing in')
     const/*--------------------*/{ email, password } = data;
     const  response = await signIn(email, password);
@@ -28,14 +28,19 @@ export const  sign_in  = createAsyncThunk('auth/sign_in',    async (data) => {
     if (response.message) { throw response } else { return response; }
 });
 
-export const  sign_out = createAsyncThunk('auth/sign_out',   async () => {
-    return true;
+export const sign_out = createAsyncThunk('auth/sign_out',       async () => {
+    const  response = await signOut();
+    return response;
 });
 
 export const update_data = createAsyncThunk('auth/update_data', async (data) => {
-    console.log(data)
     const  response = await updateAccount(data);
     return response;
+});
+
+export const is_Auth = createAsyncThunk('auth/is_Auth',         async ()     => {
+    const  response = await isAuth();
+    return response
 });
 
 const authSlice = createSlice({
@@ -67,10 +72,10 @@ const authSlice = createSlice({
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
             const account       =  action.payload;
-            console.log(account);
+            console.log('sign in fulfilled:',account);
             state.authenticated =  true;
-            state.credit        =  account.referral_credit;
-            state.contactID     =  account.id;
+            state.credit        =  account.credit;
+            state.contactID     =  account.contactID;
             state.email         =  account.email;
             state.status1       = 'succeeded';
             state.transactions  =  account.deals; 
@@ -91,7 +96,7 @@ const authSlice = createSlice({
             state.email         =  null;
             state.error1        =  null;
             state.error2        =  null;
-            state.status1       = 'idle';
+            state.status1       = 'succeeded';
             state.status2       = 'idle';
             state.transactions  =  []; 
         })
@@ -111,6 +116,27 @@ const authSlice = createSlice({
         })
         .addCase(update_data.rejected,  (state, action) => {
             state.error2        =  action.error.message;
+        })
+        //Is Auth============================================
+        .addCase(is_Auth.pending,   (state)         => {
+            state.status1       = 'loading';
+            console.log('is_Auth.pending...');
+        })
+        .addCase(is_Auth.fulfilled, (state, action) => {
+            const account       =  action.payload; 
+            console.log('auth slice is_auth fulfilled:',account)
+            state.authenticated =  true;
+            state.credit        =  account.credit;
+            state.contactID     =  account.contactID;
+            state.email         =  account.email;
+            state.status1       = 'succeeded';
+            state.transactions  =  account.deals;
+            
+        })
+        .addCase(is_Auth.rejected,  (state, action) => {
+            // state.error1        =  action.error.message;
+            state.status1       = 'failed';
+            console.log('auth slice is_auth rejected:',action.error.message);
         })
     }
 });
