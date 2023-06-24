@@ -90,7 +90,7 @@ export const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               size="25"
               autoComplete="on"
-              required
+              // required
             />
   
             <input
@@ -102,7 +102,7 @@ export const Auth = () => {
               // minLength="8"
               maxLength="32"
               autoComplete="off"
-              required
+              // required
             />
   
             <input type="submit" 

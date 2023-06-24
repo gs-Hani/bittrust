@@ -1,6 +1,6 @@
 const user1 = {
   "email": "hani_alazawi@hotmail.com",
-  "id": "2601",
+  "contactID": "2601",
   "referral_credit": "0",
   "password": "$2b$17$/j6t2j7BPanmDAEIvadj9udqAvtLDGGNfcE3Dsb1nIL5BRtVv76CO",
   "deals":[
@@ -194,14 +194,21 @@ const signOut = async () => {
 };
 
 const isAuth  = async () => {
-  const   res = await fetch(`/auth/checkauth`,{ 
-      method     :'GET',
-      credentials: 'include',
-      headers    : {
-          "Content-Type": "application/json"
-          } });
-  const  json = await res.json();
-  return json;
+  //  console.log('fetching sign in');
+  //   const res = await fetch(`/auth/signIn`,{
+  //     method     : 'POST', 
+  //     credentials: 'include',
+  //     body       :  JSON.stringify({ email,password }),
+  //     headers    : { "Content-Type": "application/json" } 
+  //   });
+  //   const  json = await res.json();
+  //   console.log('signIn res:',json);
+  //   return json;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(user1);
+    }, 2000);
+  });
 };
 
 export { signUp, signIn, signOut, isAuth };
