@@ -1,34 +1,30 @@
-body {
-  background-color: rgb(20, 4, 88);
-  text-align: center;
-}
-
 .table-container {
   display: flex;
   flex-direction: column;
-  color: rgb(12, 5, 45);
+  color: var(--federal-blue);
   margin: 50px auto;
   max-width: 700px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: rgb(4, 4, 40);
+  box-shadow: 0px 0px 2px var(--russian-violet);
 }
 
 .table {
-  background-color: rgb(255, 255, 255);
+  background-color: var(--antiflash-white);
   width: 100%;
   border-collapse: collapse;
 }
 
-p {
-  font-weight: 600;
-  color: aliceblue;
+h3 {
+  font-size: 1.6rem;
+  font-weight: normal;
+  color: var(--antiflash-white);
 }
 
 thead td {
-  background-color: rgb(57, 54, 148);
-  font-weight: 600;
-  color: aliceblue;
+  background-color: var(--federal-blue);
+  font-weight: 400;
+  color: var(--antiflash-white);
   padding: 11px;
   width: 266.725px;
 }
@@ -56,7 +52,7 @@ tbody td {
 }
 
 .table tbody tr:hover {
-  background-color: rgb(231, 231, 252);
+  background-color: var(--white);
 }
 
 @media screen and (max-width: 600px) {

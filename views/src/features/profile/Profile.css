@@ -1,20 +1,24 @@
-body {
-  color: #fff;
+.gridbox h2, .gridbox h3 {
+  color: var(--federal-blue);
 }
 
 .container {
-  background-color: rgb(253, 245, 235);
-  max-width: 450px;
+  background-color: var(--antiflash-white);
+  max-width: 500px;
   margin: auto;
   padding: 20px;
-  box-shadow: 0px 2px 6px rgb(1, 1, 21);
+  box-shadow: 0px 2px 6px var(--copper);
   border-radius: 15px;
-  color: rgb(20,4,88);
+  color: var(--federal-blue);
   margin-bottom: 20px;
 }
 
 .container p {
   color: green;
+}
+
+.container h3 {
+  color: var(--federal-blue);
 }
 
 .gridbox {
@@ -42,23 +46,32 @@ button{
 }
 button:hover {
   background-color: rgb(247, 199, 140);
-  color: #0c095e;
+  color: var(--federal-blue);
 }
 
 .toggled {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
+}
+
+.toggled h5 {
+  margin: 2rem 1rem 0.25rem;
+}
+
+.toggled input {
+  margin: 0.2rem auto 0.25rem;
 }
 
 input {
-  padding: 8px;
-  width: 240px;
+  padding: 5px;
+  box-shadow: 0px 1px 4px var(--copper);
   font-size: 14px;
   border: 1px;
   border-radius: 8px;
-  margin: auto;
+  margin: 0px;
   margin-top: 8px;
+  width: 240px;
 
 }
 
@@ -82,18 +95,18 @@ input {
 
 .alert p {
   margin: 0;
-  color: #0c095e;
+  color: var(--federal-blue);
 
 }
 input[type="button"], input[type="submit"] {
-  background-color: #0c095e;
-  color: white;
-  border-radius: 4px;
+  background-color: var(--federal-blue);
+  color: var(--antiflash-white);
   font-size: 14px;
-  
+  box-sizing:content-box;
 }
+
 form input:hover[type="button"],form input:hover[type="submit"]  {
-background-color:#090829;
+background-color:var(--federal-blue);
 }
 
 .changePassword {
@@ -112,7 +125,7 @@ label {
   font-weight: bold;
   background-color: rgb(255, 232, 200);
   padding: 8px;
-  border-radius: 20px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   width: 150px;

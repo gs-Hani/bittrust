@@ -1,5 +1,4 @@
 .header {
-  background-color: rgb(20, 4, 88);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,15 +20,14 @@
 
 .header #links a {
   text-decoration: none;
-  color: white;
-  font-weight: 500;
-  font-size: medium;
-  transition: font-size 0.4s ;
-  /* font-family: 'Lucida Grande','Lucida Sans Regular','Lucida Sans',  'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+  color: var(--antiflash-white);
+  font-weight: 400;
+  font-size: 1.25rem;
+  transition: color 0.4s ;
 }
 
 .header #links a:hover {
-  font-size: larger;
+  color:var(--gold);
 }
 
 nav {

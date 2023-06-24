@@ -1,10 +1,25 @@
+:root {
+  --carrot-orange: #F6973Aff;
+  --copper: #A97142ff;
+  --federal-blue: #26135Bff;
+  --cool-gray: #9C94B7ff;
+  --tekhelet: #3C2F74ff;
+  --thistle: #C6BCCBff;
+  --antiflash-white: #F5F4F7ff;
+  --white: #FEFDFDff;
+  --gold: #FAD62Fff;
+  --russian-violet: #0C032Bff;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Belanosima',sans-serif, Gilroy, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing:0.05em;
+  font-weight: normal;
 }
 
 code {

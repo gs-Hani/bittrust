@@ -2,7 +2,7 @@
   text-align: center;
 }
 body{
-  background-color: rgb(20,4,88);
+  background-color: var(--russian-violet);
 }
 
 .App-logo {
