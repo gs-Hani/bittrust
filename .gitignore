@@ -1,3 +1,5 @@
 node_modules/
 .env
 build/
+pg_hba.conf
+postgresql.conf

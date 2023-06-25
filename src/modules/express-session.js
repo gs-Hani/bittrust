@@ -12,11 +12,12 @@ const errorHandler = require('errorhandler');
 // };
 
 const session = require("express-session");
-const store   = new session.MemoryStore(); // used in development only !!!
+// const store   = new session.MemoryStore(); // used in development only !!!
 
 const helmet  = require('helmet');
 
 const { SECRET, NODE_ENV } = require('../model/config');
+const { pool }           = require('../model/modelIndex');
 
 module.exports = (app) => {
 
@@ -35,7 +36,11 @@ module.exports = (app) => {
           secret           : SECRET,
           resave           : false,
           saveUninitialized: false,
-          store,
+          store: new (require('connect-pg-simple')(session))({
+            pool:pool,
+            createTableIfMissing:true,
+          })
+            //   store
         })
     );
       
