@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/bittrust/static/css/main.0fddd798.css",
-    "main.js": "/bittrust/static/js/main.bf53907e.js",
-    "static/js/787.a6e3841d.chunk.js": "/bittrust/static/js/787.a6e3841d.chunk.js",
-    "static/media/Bittrust.svg": "/bittrust/static/media/Bittrust.ecfb801cf0ffe394a04b523132f4ded4.svg",
+    "main.css": "/bittrust/static/css/main.88f08bc2.css",
+    "main.js": "/bittrust/static/js/main.25ba5116.js",
+    "static/js/787.83bdfc0d.chunk.js": "/bittrust/static/js/787.83bdfc0d.chunk.js",
+    "static/media/Bittrust.svg": "/bittrust/static/media/Bittrust.990cf5c4be33aae5eaba581d348ae5fc.svg",
     "index.html": "/bittrust/index.html",
-    "main.0fddd798.css.map": "/bittrust/static/css/main.0fddd798.css.map",
-    "main.bf53907e.js.map": "/bittrust/static/js/main.bf53907e.js.map",
-    "787.a6e3841d.chunk.js.map": "/bittrust/static/js/787.a6e3841d.chunk.js.map"
+    "main.88f08bc2.css.map": "/bittrust/static/css/main.88f08bc2.css.map",
+    "main.25ba5116.js.map": "/bittrust/static/js/main.25ba5116.js.map",
+    "787.83bdfc0d.chunk.js.map": "/bittrust/static/js/787.83bdfc0d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0fddd798.css",
-    "static/js/main.bf53907e.js"
+    "static/css/main.88f08bc2.css",
+    "static/js/main.25ba5116.js"
   ]
 }
