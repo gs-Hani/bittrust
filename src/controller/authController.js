@@ -1,9 +1,9 @@
-const { hash,logIn }            = require('../services/authService');
+const { hash,logIn }                             = require('../services/authService');
 const { writeContact,updateContact,readContact } = require('../services/hubspotService');                       
 
 exports.signUp = async (req, res, next) => {
   try {
-    console.log('signUp req.body',req.body);
+    // console.log('signUp req.body',req.body);
     const/*--------------*/{ email, password, referrer_link, contactID } = req.body;
     const data           = { email, password, referrer_link, contactID };
     const hashCode       =   await hash(password);
@@ -14,7 +14,7 @@ exports.signUp = async (req, res, next) => {
     } else           {
       response = await writeContact(newData)
     };
-    console.log('signUp response.id',response.id);
+    // console.log('signUp response.id',response.id);
     req.body = {...newData,contactID:response.id, referred_by:req.body.referred_by, portalID:req.body.portalID };
     next();
   } catch (err) {
@@ -23,7 +23,7 @@ exports.signUp = async (req, res, next) => {
 };
 
 exports.signIn = async (req, res, next) => {
-  console.log('signIn req.body',req.body);
+  // console.log('signIn req.body',req.body);
   try {
     const data = req.body
     const account            = await logIn(data,readContact);
@@ -39,11 +39,11 @@ exports.signIn = async (req, res, next) => {
 };
 
 exports.checkAvailability = async (req, res, next) => {
-  console.log('checkAvailability req.body',req.body);
+  // console.log('checkAvailability req.body',req.body);
   try {
     const { email }         = req.body; 
     const   existingContact = await readContact({email});
-    console.log('existingContact:',existingContact);
+    // console.log('existingContact:',existingContact);
     if (!existingContact) {
       next();
     } else if(existingContact.properties.email && existingContact.properties.password != '') {
@@ -64,7 +64,7 @@ exports.signOut = async (req, res, next) => {
     
     req.logout(function(err) {
       if (err) { return next(err); }
-      console.log('signOut req.session',req.session);
+      // console.log('signOut req.session',req.session);
       res.status(200).send(req.session);
     });
 
@@ -76,8 +76,8 @@ exports.signOut = async (req, res, next) => {
 exports.isAuthenticated = async (req,res,next) => {
 
   try {
-    console.log('isAuthenticated req.session.passport:',req.session.passport);
-    console.log('isAuthenticated req.user:',req.user);
+    // console.log('isAuthenticated req.session.passport:',req.session.passport);
+    // console.log('isAuthenticated req.user:',req.user);
     if (req.session.passport) {
       next()
     } else {
@@ -92,7 +92,7 @@ exports.isAuthenticated = async (req,res,next) => {
 
 exports.refreshAccount = async (req,res,next) => {
   try {
-    console.log('refreshAccount req.session.passport.user:',req.session.passport.user);
+    // console.log('refreshAccount req.session.passport.user:',req.session.passport.user);
     const account = await readContact(req.session.passport.user);
     req.user = {
       contactID: account.id, 

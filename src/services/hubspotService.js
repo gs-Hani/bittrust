@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const hubspot = require('@hubspot/api-client');
+const _             = require('lodash');
+const hubspot       = require('@hubspot/api-client');
 const hubspotClient = new hubspot.Client();
 
-const { HUBSPOT }     =  require('../model/config');
+const { HUBSPOT }     = require('../model/config');
 const   CLIENT_ID     = HUBSPOT.appId;
 const   CLIENT_SECRET = HUBSPOT.secret;
 const   REDIRECT_URI  = HUBSPOT.callbackUrl;
@@ -38,7 +38,7 @@ exports.refreshToken = async (tokenStore,accessToken) => {
     );
     tokenStore = result;
     tokenStore.updatedAt = Date.now();
-    console.log('Updated tokens', tokenStore);
+    // console.log('Updated tokens', tokenStore);
     accessToken = result.accessToken;
     hubspotClient.setAccessToken(tokenStore.accessToken);
 };
@@ -80,8 +80,8 @@ exports.readContacts = async () => {
 )};
 
 exports.readContact = async({contactID,email,referred_by}) => {
-  console.log('readContact data:',{contactID,email,referred_by});
-  const properties   = ["hs_object_id","email","password","commission","referral_credit","referred_by",];
+  // console.log('readContact data:',{contactID,email,referred_by});
+  const properties   = ["hs_object_id","email","password","commission","referral_credit","referred_by"];
   let   associations =  undefined ;
   let   id_property  =  undefined ;
   let   contactId    =  contactID ;
@@ -109,7 +109,7 @@ exports.writeContact = async(data) => {
   };
   if(data.referrer_link) { properties = {...properties, referred_by : data.referrer_link}}
   try {
-    console.log('writing contact...',properties);
+    // console.log('writing contact...',properties);
     return await hubspotClient.crm.contacts.basicApi.create({properties,associations:[]});
   } catch (e) {
     e.message === 'HTTP request failed'
@@ -119,15 +119,15 @@ exports.writeContact = async(data) => {
 };
 
 exports.updateContact = async(data) => {
-  console.log('updateContact data:',data);
+  // console.log('updateContact data:',data);
   const { email, password, contactID:contactId, commission, referral_credit,referrer_link } = data;
   let properties   = { email, password };
-  console.log('updateContact properties:',properties);
+  // console.log('updateContact properties:',properties);
   if (commission)            { properties = { ...properties,commission,referral_credit } };
   if (referrer_link)         { properties = { ...properties,referred_by:referrer_link  } };
   if (referral_credit && 0 < Number(referral_credit)) { properties = { referral_credit } };
   try {
-    console.log('updating contact...');
+    // console.log('updating contact...');
     return await hubspotClient.crm.contacts.basicApi.update(contactId,{properties});
   } catch (e) {
     e.message === 'HTTP request failed'
@@ -139,7 +139,7 @@ exports.updateContact = async(data) => {
 //DEALS================================
 exports.getDeal = async (id) => {
   try {
-    console.log("getdeal id:",typeof id, id);
+    // console.log("getdeal id:",typeof id, id);
       const dealId                =    id;
       const properties            = [ "closedate", "amount", "buy9__profit", "sell9__profit", "dealname" ];
       const propertiesWithHistory =    undefined;
@@ -149,7 +149,7 @@ exports.getDeal = async (id) => {
       const dealsResponse         =    await hubspotClient.crm.deals.basicApi.getById(
           dealId, properties, propertiesWithHistory, associations, archived, idProperty
       );
-      console.log(dealsResponse);
+      // console.log(dealsResponse);
       return {id       :dealsResponse.id,
               amount   :dealsResponse.properties.amount,
               date     :dealsResponse.properties.closedate.split('T')[0],
@@ -168,10 +168,10 @@ exports.getDeal = async (id) => {
 exports.readDeals = async (array) => {
   try {
     const BatchReadInputSimplePublicObjectId = {  properties: ["buy9__profit","sell9__profit"],
-                                                  inputs: [...array] };
-    const archived = false;
+                                                  inputs    : [...array] };
+    const archived    = false;
     const apiResponse = await hubspotClient.crm.deals.batchApi.read(BatchReadInputSimplePublicObjectId, archived);
-    console.log(JSON.stringify(apiResponse, null, 2));
+    // console.log(JSON.stringify(apiResponse, null, 2));
     return apiResponse;
   } catch      (e) {
     e.message === 'HTTP request failed'
@@ -183,7 +183,6 @@ exports.readDeals = async (array) => {
 exports.searchDeals = async () => {
   try {
     const filter1 = { propertyName: 'closedate', operator: 'BETWEEN', value:`${Date.now() - 24*60*60*1000}` ,highValue: `${Date.now()}` };
-    // const filter2 = { propertyName: 'associations.contact', operator: 'HAS_PROPERTY' }
     const filterGroups = { filters: [filter1] };
     const sort = JSON.stringify({ propertyName: 'closedate', direction: 'DESCENDING' });
     // const query = 'test';
@@ -192,14 +191,14 @@ exports.searchDeals = async () => {
     const after = 0;
     const publicObjectSearchRequest = {
       filterGroups: [filterGroups],
-      sorts: [sort],
+      sorts       : [sort],
       // query,
       properties,
       limit,
       after,
     }
     const result = await hubspotClient.crm.deals.searchApi.doSearch(publicObjectSearchRequest);
-    console.log(result);
+    // console.log(result);
     return result;
   } catch      (e) {
     handleError(e,res);
@@ -217,10 +216,10 @@ exports.writeImage = async (data) => {
   const content       = await fileToBuffer(upload);
   const folderPath    = 'IDs';
   const option        = {
-    access: 'PUBLIC_NOT_INDEXABLE',
-    overwrite: true,
+    access                     : 'PUBLIC_NOT_INDEXABLE',
+    overwrite                  : true,
     duplicateValidationStrategy: 'NONE',
-    duplicateValidationScope:'EXACT_FOLDER'
+    duplicateValidationScope   :'EXACT_FOLDER'
   };
   return await hubspot.files.upload({ content,fileName,folderPath,options:option});
 };
@@ -228,14 +227,14 @@ exports.writeImage = async (data) => {
 //NOTES===========================
 exports.writeNote = async (data) => {
   const { hubspot,photoID,contactID,portalID,referred_by } = data;
-  console.log('writeNote data:',photoID,contactID,portalID,referred_by);
+  // console.log('writeNote data:',photoID,contactID,portalID,referred_by);
   let noteEngagement = {};
   if(referred_by) {
     noteEngagement = {
       engagement  : { active: true, type: "NOTE" },
       associations: { contactIds: [referred_by] },
       metadata    : { body: `https://app.hubspot.com/contacts/${portalID}/contact/${contactID}`},
-      json: true
+      json        : true
     };
   } else {
     noteEngagement = {
@@ -243,28 +242,26 @@ exports.writeNote = async (data) => {
       associations: { contactIds: [contactID] },
       metadata    : { body: `${contactID}`},
       attachments : [ { id:photoID } ],
-      json: true
+      json        : true
     };
   }
   return await hubspot.engagements.create(noteEngagement);
 };
 
 //OTHER===========================
-exports.logResponse = (message, data) => {
-    console.log(message, JSON.stringify(data, null, 1));
-};
+// exports.logResponse = (message, data) => {
+//     console.log(message, JSON.stringify(data, null, 1));
+// };
 
 exports.handleError = (e, res) => {
     if (_.isEqual(e.message, 'HTTP request failed')) {
       const errorMessage = JSON.stringify(e, null, 2);
-      console.error(errorMessage);
+      // console.error(errorMessage);
       return res.redirect(`/error?msg=${errorMessage}`);
     }
   
     console.error(e);
-    res.redirect(
-      `/error?msg=${JSON.stringify(e, Object.getOwnPropertyNames(e), 2)}`
-    );
+    res.redirect( `/error?msg=${JSON.stringify(e, Object.getOwnPropertyNames(e), 2)}` );
 };
 
 const fs = require('fs');
@@ -273,7 +270,6 @@ function fileToBuffer (file) {
     return new Promise((resolve, reject) => {
       fs.readFile(file.path || file, (err, data) => {
         if (err) return reject(err)
-  
         resolve(data)
       })
     })

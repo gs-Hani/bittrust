@@ -16,9 +16,6 @@ const uploadImage = async (formData) => {
         method     : 'POST',
         credentials: 'include',
         body       :  formData,
-        // headers    : {
-        //     "Content-Type": "application/json"
-        // } 
     });
     const  json = await res.json();
     return json;

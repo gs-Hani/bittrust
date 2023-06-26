@@ -1,16 +1,10 @@
-import   React, { useEffect } from 'react';
-import { useSelector }        from 'react-redux';
-import { useNavigate }        from 'react-router-dom';
+import   React         from 'react';
+import { useSelector } from 'react-redux';
 import './TransRecords.css';
-import { Loading }            from '../../components/loading/Loading';
-import { is_Auth }            from '../../features/auth/authSlice';
+import { Loading }     from '../../components/loading/Loading';
 
 export const TransRecords = () => {
-    const   navigate              = useNavigate();
     const { transactions,credit,status1 } = useSelector((state) => state.auth);
-    // useEffect (() => {
-    //     if(status1 !== 'loading' && !authenticated) { {navigate('/');} }
-    // },[status1,authenticated,navigate]);
     //===========================================================================
     if      (status1 === 'loading')   { return (Loading()) }
     else if (status1 === 'succeeded') { return (Transactions(transactions,credit))} 

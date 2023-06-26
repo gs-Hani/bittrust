@@ -9,7 +9,7 @@ const initialState = {
 };
 
 export const loadRecords = createAsyncThunk('transRecords/loadRecords', async (trans_ids) => {
-    console.log(trans_ids);
+    // console.log(trans_ids);
     const  res = await trans_ids.map(id => fetchRecordDetails(id));
     return res;
 })

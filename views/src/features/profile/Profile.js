@@ -1,37 +1,25 @@
-import React, { useEffect,useState }      from 'react';
+import React, { useState }                from 'react';
 import        { useSelector,useDispatch } from 'react-redux';
 import        { useNavigate }             from 'react-router-dom';
 import        { update_data }             from '../auth/authSlice';
 import        { upload_Image }            from './profileSlice'
 import        { matchPassword }           from '../../util/usefulFunctions';
-import        { is_Auth }                 from '../../features/auth/authSlice';
 
 import './Profile.css';
+import { Loading }                        from '../../components/loading/Loading';
 
-import { Loading }            from '../../components/loading/Loading';
-
-const  FormData = require('form-data');
+const FormData = require('form-data');
 
 export const Profile = () => {
-    // const [email      , setEmail      ] = useState();   
-    // const [password   , setPassword   ] = useState();
-    // const [newPassword, setNewPassword] = useState();
     const [showAlert  , setShowAlert  ] = useState(false);
     const [alertText  , setAlertText  ] = useState('');
     const [file       , setFile       ] = useState(null);
     const  dispatch                     = useDispatch();
-    const  navigate                     = useNavigate();
     const  auth                         = useSelector(state => state.auth);
     const  profile                      = useSelector(state => state.profile);
 
-    // useEffect(() => console.log(auth), [auth.status1]);
-    // useEffect (() => {
-    //   console.log('profile useEffect',auth.status1,auth.authenticated)
-    //     if(auth.status1 !== 'loading' && !auth.authenticated) { {navigate('/');} }
-    // },[auth.status1,auth.authenticated,navigate]);
-
     const updateAccount = async (email,password,newPassword) => {
-      console.log(newPassword,password);
+      // console.log(newPassword,password);
         let E; let NP;
         !email       ? E  = auth.email     : E  = email;
         !newPassword ? NP = password       : NP = newPassword;
@@ -44,16 +32,16 @@ export const Profile = () => {
 
     const uploadImage = async (e) => {
       const formData = new FormData();
-      console.log(auth.contactID,file);
+      // console.log(auth.contactID,file);
       formData.append('content',file);
       formData.append('contactID',auth.contactID);
-      console.log(formData);
+      // console.log(formData);
       dispatch(upload_Image(formData));
     };
 
     const handleFile = (e) => {
       const file = e.target.files[0];
-      console.log(file);
+      // console.log(file);
       setFile(file);
     };
 
@@ -83,7 +71,7 @@ export const Profile = () => {
                                       const email       = document.getElementById("email").value;
                                       const newPassword = document.getElementById("password").value;
                                       const password    = document.getElementById("old-password").value;
-                                      console.log(newPassword,password);
+                                      // console.log(newPassword,password);
                                       updateAccount(email,password,newPassword);
                                       document.getElementById("updateProfile").reset(); }}
             >
