@@ -10,13 +10,11 @@ export const Header = () => {
     const   navigate                = useNavigate();
     const { authenticated,status1 } = useSelector(state => state.auth);
 
-    useEffect (() => { 
-        dispatch(is_Auth());
-    },[dispatch]);
+    useEffect (() => { dispatch(is_Auth()) },[dispatch]);
 
     useEffect (() => { 
         if((status1 === 'failed'||status1 === 'succeeded') && !authenticated) {
-            console.log('header rerouting');
+            // console.log('header rerouting');
             navigate('/'); 
         }
     },[navigate,status1,authenticated]);

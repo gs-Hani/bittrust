@@ -17,14 +17,14 @@ const initialState = {
 export const  sign_up  = createAsyncThunk('auth/sign_up',    async (data) => {
     const/*--------------------*/{ password,email,ref } = data;
     const  response = await signUp(password,email,ref);
-    if (response.message) { throw response } else { return response; }
+    if    (response.message) { throw response } else { return response; }
 });
 
 export const  sign_in  = createAsyncThunk('auth/sign_in',       async (data) => {
-    console.log('signing in')
+    // console.log('signing in')
     const/*--------------------*/{ email, password } = data;
     const  response = await signIn(email, password);
-    console.log('sign_in response:', response);
+    // console.log('sign_in response:', response);
     if (response.message) { throw response } else { return response; }
 });
 
@@ -72,7 +72,7 @@ const authSlice = createSlice({
         })
         .addCase(sign_in.fulfilled, (state, action)  => {
             const account       =  action.payload;
-            console.log('sign in fulfilled:',account);
+            // console.log('sign in fulfilled:',account);
             state.authenticated =  true;
             state.credit        =  account.credit;
             state.contactID     =  account.contactID;
@@ -81,7 +81,7 @@ const authSlice = createSlice({
             state.transactions  =  account.deals; 
         })
         .addCase(sign_in.rejected,  (state, action)  => {
-            console.log(action.error);
+            // console.log(action.error);
             state.error1        =  action.error.message;
             state.status1       = 'failed';
         })
@@ -110,7 +110,7 @@ const authSlice = createSlice({
         })
         .addCase(update_data.fulfilled, (state, action) => {
             const {email} = action.payload.properties;
-            console.log('update data slice, action.payload:',action.payload);
+            // console.log('update data slice, action.payload:',action.payload);
             state.email   =  email;
             state.status2 = 'succeeded';
         })
@@ -120,11 +120,11 @@ const authSlice = createSlice({
         //Is Auth============================================
         .addCase(is_Auth.pending,   (state)         => {
             state.status1       = 'loading';
-            console.log('is_Auth.pending...');
+            // console.log('is_Auth.pending...');
         })
         .addCase(is_Auth.fulfilled, (state, action) => {
             const account       =  action.payload; 
-            console.log('auth slice is_auth fulfilled:',account)
+            // console.log('auth slice is_auth fulfilled:',account)
             state.authenticated =  true;
             state.credit        =  account.credit;
             state.contactID     =  account.contactID;
@@ -136,7 +136,7 @@ const authSlice = createSlice({
         .addCase(is_Auth.rejected,  (state, action) => {
             // state.error1        =  action.error.message;
             state.status1       = 'failed';
-            console.log('auth slice is_auth rejected:',action.error.message);
+            // console.log('auth slice is_auth rejected:',action.error.message);
         })
     }
 });

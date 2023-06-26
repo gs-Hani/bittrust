@@ -1,14 +1,11 @@
-const express = require('express');
-const router  = express.Router();
-const path = require('path');
+const express    = require('express');
+const router     = express.Router();
+const path       = require('path');
 const bodyParser = require('body-parser');
 
-const { checkEnv,
-        getContacts,
-        authorize,
-        getAccesstoken,
-        emptyTokenStore,
-        refreshAuthpage 
+const { checkEnv, getContacts,
+        authorize, getAccesstoken,
+        emptyTokenStore, refreshAuthpage 
 } = require('../controller/hubspotController');
 
 module.exports = (app) => {

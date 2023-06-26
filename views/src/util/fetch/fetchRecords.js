@@ -11,19 +11,19 @@ const fetchRecordsIDs = async (record_id) => {
     return json;
 }; 
 
-const fetchRecordDetails = (id) => {
-    // const res = await fetch(`/transactions/record/${id}`,{
-    //     method     :  'GET',
-    //     body       :   null,
-    //     credentials:  'include',
-    //     headers    : {
-    //         "Content-Type": "application/json"
-    //     }
-    // });
-    // const  json = await res.json();
-    //const  deal = deals.find(deal => deal.properties.hs_object_id === id);
-    //return deal.properties;
+const fetchRecordDetails = async (id) => {
+    const res = await fetch(`/transactions/record/${id}`,{
+        method     :  'GET',
+        body       :   null,
+        credentials:  'include',
+        headers    : {
+            "Content-Type": "application/json"
+        }
+    });
+    const  json = await res.json();
+    const  deal = json.find(deal => deal.properties.hs_object_id === id);
+    return deal.properties;
 }; 
 
-export { fetchRecordsIDs, fetchRecordDetails };
+// export { fetchRecordsIDs, fetchRecordDetails };
 

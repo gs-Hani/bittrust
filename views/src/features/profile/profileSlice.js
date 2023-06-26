@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export const upload_Image = createAsyncThunk('profile/upload_Image', async (formdata) => {
-    console.log('upload_Image formdata:',formdata);
+    // console.log('upload_Image formdata:',formdata);
     const response = await uploadImage(formdata);
     if (response.message) { throw response } else { return response; }
 });

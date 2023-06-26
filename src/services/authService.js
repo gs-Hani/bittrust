@@ -19,19 +19,19 @@ const passwordHash = async (password) => {
 
 const comparePasswords = /*----------*/async (password,hash) => {
   const  matchFound    = await bcrypt.compare(password,hash);
-  console.log('comparePasswords results:',matchFound);
+  // console.log('comparePasswords results:',matchFound);
   return matchFound ;
 };
 
-function generateRefCode () {
-    const length  = 6;
-    const charset = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
-    let refCode = '';
-    for (let i = 0, n = charset.length; i < length; ++i) {
-      refCode += charset.charAt(Math.floor(Math.random() * n));
-    }
-    return refCode;
-};
+// function generateRefCode () {
+//     const length  = 6;
+//     const charset = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789';
+//     let refCode = '';
+//     for (let i = 0, n = charset.length; i < length; ++i) {
+//       refCode += charset.charAt(Math.floor(Math.random() * n));
+//     }
+//     return refCode;
+// };
 
 async function hash (password) {
     try {
@@ -44,15 +44,15 @@ async function hash (password) {
     
 };
 
-async function ref () {
-  try {
+// async function ref () {
+//   try {
            
-    return generateRefCode();
+//     return generateRefCode();
 
-  } catch (err) {
-    throw (err)
-  }
-};
+//   } catch (err) {
+//     throw (err)
+//   }
+// };
 
 function isAuthorized (tokenStore) {
     return !_.isEmpty(tokenStore.refreshToken);
@@ -66,7 +66,7 @@ async function logIn (data,readContact) {
   try {
     const {contactID, email, password} = data;
     const account = await readContact({contactID, email});
-    console.log('sign in account:',account);
+    // console.log('sign in account:',account);
     if (!account || account.properties.password == null) {
       const err        = new Error('No account with such email was found!');
             err.status = 404;
@@ -90,7 +90,7 @@ async function logIn (data,readContact) {
 
 module.exports = {
     hash,
-    ref,
+    // ref,
     isAuthorized,
     isTokenExpired,
     comparePasswords,

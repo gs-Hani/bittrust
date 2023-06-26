@@ -19,7 +19,7 @@ export const Auth = () => {
   const { status1 }                 = useSelector((state) => state.auth)
   
   useEffect(() => {
-    console.log('auth page useEffect:',authenticated);
+    // console.log('auth page useEffect:',authenticated);
     if (authenticated) { navigate('/transRecords'); } 
   }, [authenticated, navigate]);
 
@@ -28,7 +28,7 @@ export const Auth = () => {
   };
 
   const login = (email, password) => {
-    console.log('dispatch sign_in')
+    // console.log('dispatch sign_in')
     dispatch(sign_in({ email, password }));
   };
 
@@ -62,53 +62,42 @@ export const Auth = () => {
     }
   };
 
-  // const loading = () => {
-  //   return (
-  //     <div className="ring">Loading
-  //       <span></span>
-  //     </div>
-  //   )
-  // };
-
   const auth = () => {
     return (
       <div className="auth">
         {showSignUp ? (
           <form
             id="sign-in-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              login(email, password);
-            }}
+            onSubmit={(e) => { e.preventDefault(); login(email, password) }}
           >
             <h2>Sign IN</h2>
             <input
-              type="email"
-              id="Email"
-              name="email"
-              placeholder="example@emailprovider.com"
-              onChange={(e) => setEmail(e.target.value)}
-              size="25"
+              type        ="email"
+              id          ="Email"
+              name        ="email"
+              placeholder ="example@emailprovider.com"
+              onChange    ={(e) => setEmail(e.target.value)}
+              size        ="25"
               autoComplete="on"
               required
             />
   
             <input
-              type="password"
-              id="Password"
-              name="password"
-              placeholder="password"
-              onChange={(e) => setPassword(e.target.value)}
-              // minLength="8"
-              maxLength="32"
+              type        ="password"
+              id          ="Password"
+              name        ="password"
+              placeholder ="password"
+              onChange    ={(e) => setPassword(e.target.value)}
+              // minLength   ="8"
+              maxLength   ="32"
               autoComplete="off"
               required
             />
   
-            <input type="submit" 
-            id="Submit" 
-            value="Log in"
-             />
+            <input  type ="submit" 
+                    id   ="Submit" 
+                    value="Log in"
+            />
   
             <button type="button" id="slide" onClick={toggleSignUp}>
               no account?
@@ -125,33 +114,33 @@ export const Auth = () => {
             <h2>Sign UP</h2>
   
             <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="example@emailprovider.com"
-              onChange={(e) => setEmail(e.target.value)}
-              size="25"
+              type        ="email"
+              id          ="email"
+              name        ="email"
+              placeholder ="example@emailprovider.com"
+              onChange    ={(e) => setEmail(e.target.value)}
+              size        ="25"
               autoComplete="on"
               required
             />
   
             <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="password"
-              onChange={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
-              // minLength="8"
-              maxLength="32"
+              type        ="password"
+              id          ="password"
+              name        ="password"
+              placeholder ="password"
+              onChange    ={(e) => { matchPassword(e.target.value); setPassword(e.target.value); }}
+              minLength   ="8"
+              maxLength   ="32"
               autoComplete="off"
               required
             />
     
             <input
-              type="password"
-              id="confirm-password"
-              placeholder="confirm-password"
-              onChange={(e) => matchPassword(e.currentTarget.value)}
+              type        ="password"
+              id          ="confirm-password"
+              placeholder ="confirm-password"
+              onChange    ={(e) => matchPassword(e.currentTarget.value)}
               autoComplete="off"
               required
             />

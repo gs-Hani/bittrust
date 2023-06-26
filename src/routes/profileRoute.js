@@ -1,5 +1,5 @@
-const express = require('express');
-const router  = express.Router();
+const   express         = require('express');
+const   router          = express.Router();
 const { uploadImage }   = require('../controller/hubspotController');
 const { signIn }        = require('../controller/authController');
 const { updateProfile } = require('../controller/profileController');
